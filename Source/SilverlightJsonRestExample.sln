@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WickedSick.JsonRestService", "WickedSick.JsonRestService\WickedSick.JsonRestService.csproj", "{FA8C4651-66D7-43FC-B773-A179BBEC81F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WickedSick.SilverlightExample", "WickedSick.SilverlightExample\WickedSick.SilverlightExample.csproj", "{7B56BDB5-AAEC-4E80-B986-01587D1A25A4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FA8C4651-66D7-43FC-B773-A179BBEC81F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA8C4651-66D7-43FC-B773-A179BBEC81F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA8C4651-66D7-43FC-B773-A179BBEC81F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA8C4651-66D7-43FC-B773-A179BBEC81F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B56BDB5-AAEC-4E80-B986-01587D1A25A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B56BDB5-AAEC-4E80-B986-01587D1A25A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B56BDB5-AAEC-4E80-B986-01587D1A25A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B56BDB5-AAEC-4E80-B986-01587D1A25A4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
