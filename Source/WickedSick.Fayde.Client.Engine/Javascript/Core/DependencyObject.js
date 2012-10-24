@@ -276,7 +276,7 @@ DependencyObject.Instance._SetValueWithErrorImpl = function (propd, value, error
         if (propd._IsAutoCreated)
             this._Providers[propPrecEnum.AutoCreate].ClearValue(propd);
 
-        if (value !== undefined && (!propd._IsAutoCreated || !(value instanceof DependencyObject) || Nullstone.Is(value, DependencyObject)))
+        if (value !== undefined && (!propd._IsAutoCreated || !(value instanceof DependencyObject)))
             newValue = value;
         else
             newValue = undefined;

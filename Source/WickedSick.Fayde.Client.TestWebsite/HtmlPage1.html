@@ -18,10 +18,33 @@
     }
     </style>
     <script type="text/javascript" src="Silverlight.js"></script>
+    <script type="text/javascript" src="/Fayde/Fayde.js"></script>
+    <script type="text/javascript" src="/Fayde/Fayde.Generic.js"></script>
     <script type="text/javascript">
         function CustomType() {
             this.somemember = "RAWR";
         }
+        CustomType._TypeName = "CustomType";
+
+        var TestProp = new DependencyProperty("Test", undefined, undefined, 1);
+
+        var SL_INTEROP_UNDEFINED;
+
+        function TestType() {
+            this._ID = Nullstone._LastID = Nullstone._LastID + 1;
+            this._Native = SLApp.Content.DOFactory.CreateObject(this);
+        }
+        TestType.prototype.SetValue = function (prop, value) {
+            if (value === undefined)
+                value = SL_INTEROP_UNDEFINED;
+            this._Native.SetValue(prop, value);
+        };
+        TestType.prototype.GetValue = function (prop) {
+            var val = this._Native.GetValue(prop);
+            if (val && val.toString() === SL_INTEROP_UNDEFINED.toString())
+                return;
+            return val;
+        };
 
         var SLApp;
         function onSilverlightError(sender, args) {
@@ -60,9 +83,18 @@
         }
         function pluginLoaded(sender, args) {
             SLApp = sender.getHost();
-            var native = SLApp.Content.DOFactory.CreateObject();
-            native.SetValue(1, new CustomType());
-            alert(native.GetValue(1).somemember);
+            SL_INTEROP_UNDEFINED = SLApp.Content.DOFactory.CreateUndefined();
+            SLApp.Content.DOFactory.RegisterNullstone(Nullstone);
+
+            var o;
+            //o = null;
+            o = new CustomType();
+
+            var testobject = new TestType();
+            testobject.SetValue(TestProp, o);
+            var rv = testobject.GetValue(TestProp);
+
+            alert(rv);
         }
     </script>
 </head>

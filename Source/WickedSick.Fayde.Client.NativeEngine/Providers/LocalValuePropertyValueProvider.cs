@@ -4,29 +4,37 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
 {
     public class LocalValuePropertyValueProvider : PropertyValueProvider
     {
-        private Dictionary<int, object> _ht = new Dictionary<int, object>();
+        private Dictionary<DependencyPropertyWrapper, object> _ht = new Dictionary<DependencyPropertyWrapper, object>();
 
-        public LocalValuePropertyValueProvider(DependencyObject @do)
+        public LocalValuePropertyValueProvider(DependencyObjectNative @do)
             : base(@do, PropertyPrecedence.LocalValue)
         {
         }
 
-        public override object GetPropertyValue(DependencyProperty prop)
+        public override object GetPropertyValue(DependencyPropertyWrapper prop)
         {
-            if (!_ht.ContainsKey(prop._ID))
-                return DependencyObject.UNDEFINED;
-            return _ht[prop._ID];
+            if (!_ht.ContainsKey(prop))
+                return DependencyObjectNative.UNDEFINED;
+            return _ht[prop];
         }
 
-        public void SetValue(DependencyProperty prop, object value)
+        public void SetValue(DependencyPropertyWrapper prop, object value)
         {
-            this._ht[prop._ID] = value;
+            this._ht[prop] = value;
         }
 
-        public void ClearValue(DependencyProperty prop)
+        public void ClearValue(DependencyPropertyWrapper prop)
         {
-            if (_ht.ContainsKey(prop._ID))
-                _ht.Remove(prop._ID);
+            if (_ht.ContainsKey(prop))
+                _ht.Remove(prop);
+        }
+
+        public override void ForeachValue(System.Action<DependencyPropertyWrapper, object> action)
+        {
+            foreach (var kvp in _ht)
+            {
+                action(kvp.Key, kvp.Value);
+            }
         }
     }
 }

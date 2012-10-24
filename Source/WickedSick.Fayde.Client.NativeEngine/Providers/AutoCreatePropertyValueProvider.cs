@@ -4,44 +4,52 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
 {
     public class AutoCreatePropertyValueProvider : PropertyValueProvider
     {
-        private Dictionary<int, object> _ht = new Dictionary<int, object>();
+        private Dictionary<DependencyPropertyWrapper, object> _ht = new Dictionary<DependencyPropertyWrapper, object>();
 
-        public AutoCreatePropertyValueProvider(DependencyObject @do)
+        public AutoCreatePropertyValueProvider(DependencyObjectNative @do)
             : base(@do, PropertyPrecedence.AutoCreate)
         {
         }
 
-        public override object GetPropertyValue(DependencyProperty prop)
+        public override object GetPropertyValue(DependencyPropertyWrapper prop)
         {
             var val = ReadLocalValue(prop);
-            if (val != DependencyObject.UNDEFINED)
+            if (val != DependencyObjectNative.UNDEFINED)
                 return val;
 
-            val = prop._IsAutoCreated ? prop._GetAutoCreatedValue(_Object) : DependencyObject.UNDEFINED;
-            if (val == DependencyObject.UNDEFINED)
+            val = prop._IsAutoCreated ? prop._GetAutoCreatedValue(_Object) : DependencyObjectNative.UNDEFINED;
+            if (val == DependencyObjectNative.UNDEFINED)
                 return val;
 
-            _ht[prop._ID] = val;
-            _Object._ProviderValueChanged(_Precedence, prop, DependencyObject.UNDEFINED, val, false, true, false);
+            _ht[prop] = val;
+            _Object._ProviderValueChanged(_Precedence, prop, DependencyObjectNative.UNDEFINED, val, false, true, false);
             return val;
         }
 
-        public object ReadLocalValue(DependencyProperty prop)
+        public object ReadLocalValue(DependencyPropertyWrapper prop)
         {
-            if (_ht.ContainsKey(prop._ID))
-                return _ht[prop._ID];
-            return DependencyObject.UNDEFINED;
+            if (_ht.ContainsKey(prop))
+                return _ht[prop];
+            return DependencyObjectNative.UNDEFINED;
         }
 
-        public void RecomputePropertyValueOnClear(DependencyProperty prop)
+        public override void RecomputePropertyValueOnClear(DependencyPropertyWrapper prop)
         {
             ClearValue(prop);
         }
 
-        public void ClearValue(DependencyProperty prop)
+        public void ClearValue(DependencyPropertyWrapper prop)
         {
-            if (_ht.ContainsKey(prop._ID))
-                _ht.Remove(prop._ID);
+            if (_ht.ContainsKey(prop))
+                _ht.Remove(prop);
+        }
+
+        public override void ForeachValue(System.Action<DependencyPropertyWrapper, object> action)
+        {
+            foreach (var kvp in _ht)
+            {
+                action(kvp.Key, kvp.Value);
+            }
         }
     }
 }

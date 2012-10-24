@@ -74,19 +74,29 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DependencyObject.cs" />
+    <Compile Include="DependencyObjectNative.cs" />
     <Compile Include="DependencyObjectFactory.cs" />
-    <Compile Include="DependencyProperty.cs" />
+    <Compile Include="DependencyPropertyWrapper.cs" />
+    <Compile Include="INullstoneObjectWrapper.cs" />
+    <Compile Include="JsTypeNames.cs" />
+    <Compile Include="LazyMember.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Nullstone.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\AutoCreatePropertyValueProvider.cs" />
     <Compile Include="Providers\DefaultValuePropertyValueProvider.cs" />
+    <Compile Include="Providers\ImplicitStylePropertyValueProvider.cs" />
+    <Compile Include="Providers\Inheritable.cs" />
+    <Compile Include="Providers\InheritedDataContextPropertyValueProvider.cs" />
     <Compile Include="Providers\InheritedIsEnabledPropertyValueProvider.cs" />
+    <Compile Include="Providers\InheritedPropertyValueProvider.cs" />
     <Compile Include="Providers\LocalValuePropertyValueProvider.cs" />
     <Compile Include="Providers\PropertyPrecedence.cs" />
     <Compile Include="Providers\PropertyValueProvider.cs" />
+    <Compile Include="Providers\StylePropertyValueProvider.cs" />
+    <Compile Include="UndefinedObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

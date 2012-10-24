@@ -11,19 +11,14 @@ using System.Windows.Shapes;
 
 namespace WickedSick.Fayde.Client.NativeEngine.Providers
 {
-    public class InheritedIsEnabledPropertyValueProvider : PropertyValueProvider
+    public class InheritedDataContextPropertyValueProvider : PropertyValueProvider
     {
-        public InheritedIsEnabledPropertyValueProvider(DependencyObjectNative @do)
-            : base(@do, PropertyPrecedence.IsEnabled)
+        public InheritedDataContextPropertyValueProvider(DependencyObjectNative @do)
+            : base(@do, PropertyPrecedence.InheritedDataContext)
         {
         }
 
         public override object GetPropertyValue(DependencyPropertyWrapper prop)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool LocalValueChanged(DependencyPropertyWrapper prop)
         {
             throw new NotImplementedException();
         }
