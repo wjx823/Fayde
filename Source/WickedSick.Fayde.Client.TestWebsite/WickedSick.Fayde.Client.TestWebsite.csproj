@@ -19,7 +19,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
-    <SilverlightApplicationList>{8EBC2ED0-1EDD-4204-BD21-1F5EF6B6494F}|..\WickedSick.LitmusTests\WickedSick.LitmusTests.csproj|ClientBin|False</SilverlightApplicationList>
+    <SilverlightApplicationList>{8EBC2ED0-1EDD-4204-BD21-1F5EF6B6494F}|..\WickedSick.LitmusTests\WickedSick.LitmusTests.csproj|ClientBin|False,{A2730C99-37E7-41E5-86BF-465726FB04A7}|..\WickedSick.Fayde.Client.NativeEngine\WickedSick.Fayde.Client.NativeEngine.csproj|ClientBin|False</SilverlightApplicationList>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -62,7 +62,9 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ClientBin\WickedSick.Fayde.Client.NativeEngine.xap" />
     <Content Include="ClientBin\WickedSick.LitmusTests.xap" />
+    <Content Include="HtmlPage1.html" />
     <Content Include="Images\github.png" />
     <Content Include="Images\header_overlay.png" />
     <Content Include="Images\page01.jpg" />
