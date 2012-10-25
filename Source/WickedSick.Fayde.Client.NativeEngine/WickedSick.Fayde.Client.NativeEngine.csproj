@@ -74,9 +74,11 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ControlNative.cs" />
     <Compile Include="DependencyObjectNative.cs" />
-    <Compile Include="DependencyObjectFactory.cs" />
+    <Compile Include="DependencyObjectInterop.cs" />
     <Compile Include="DependencyPropertyWrapper.cs" />
+    <Compile Include="FrameworkElementNative.cs" />
     <Compile Include="INullstoneObjectWrapper.cs" />
     <Compile Include="JsTypeNames.cs" />
     <Compile Include="LazyMember.cs" />
@@ -87,6 +89,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\AutoCreatePropertyValueProvider.cs" />
     <Compile Include="Providers\DefaultValuePropertyValueProvider.cs" />
+    <Compile Include="Providers\FrameworkElementPropertyValueProvider.cs" />
     <Compile Include="Providers\ImplicitStylePropertyValueProvider.cs" />
     <Compile Include="Providers\Inheritable.cs" />
     <Compile Include="Providers\InheritedDataContextPropertyValueProvider.cs" />
@@ -96,6 +99,7 @@
     <Compile Include="Providers\PropertyPrecedence.cs" />
     <Compile Include="Providers\PropertyValueProvider.cs" />
     <Compile Include="Providers\StylePropertyValueProvider.cs" />
+    <Compile Include="UIElementNative.cs" />
     <Compile Include="UndefinedObject.cs" />
   </ItemGroup>
   <ItemGroup>

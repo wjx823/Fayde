@@ -6,6 +6,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
         public const string DependencyObject = "DependencyObject";
         public const string DependencyProperty = "DependencyProperty";
         public const string Collection = "Collection";
+        public const string UIElement = "UIElement";
         public const string FrameworkElement = "FrameworkElement";
     }
 }

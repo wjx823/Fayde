@@ -61,12 +61,20 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
             throw new NotImplementedException();
         }
 
+        public void PropagateInheritedPropertiesOnAddingToTree(DependencyObjectNative subtree)
+        {
+            throw new NotImplementedException();
+        }
+        public void ClearInheritedPropertiesOnRemovingFromTree(DependencyObjectNative subtree)
+        {
+            throw new NotImplementedException();
+        }
+
 
         public static int GetInheritable(object ancestor, DependencyPropertyWrapper prop)
         {
             throw new NotImplementedException();
         }
-
         public static DependencyPropertyWrapper GetProperty(int inheritable, object ancestor)
         {
             throw new NotImplementedException();

@@ -32,7 +32,7 @@
 
         function TestType() {
             this._ID = Nullstone._LastID = Nullstone._LastID + 1;
-            this._Native = SLApp.Content.DOFactory.CreateObject(this);
+            this._Native = SLApp.Content.DOInterop.CreateDependencyObjectNative(this);
         }
         TestType.prototype.SetValue = function (prop, value) {
             if (value === undefined)
@@ -83,9 +83,10 @@
         }
         function pluginLoaded(sender, args) {
             SLApp = sender.getHost();
-            SL_INTEROP_UNDEFINED = SLApp.Content.DOFactory.CreateUndefined();
-            SLApp.Content.DOFactory.RegisterNullstone(Nullstone);
-
+            SL_INTEROP_UNDEFINED = SLApp.Content.DOInterop.CreateUndefined();
+            SLApp.Content.DOInterop.RegisterNullstone(Nullstone);
+            SLApp.Content.DOInterop.RegisterDPs(DependencyObject, UIElement, FrameworkElement, Control);
+            
             var o;
             //o = null;
             o = new CustomType();

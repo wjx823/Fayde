@@ -20,8 +20,8 @@ namespace WickedSick.Fayde.Client.NativeEngine
         }
 
 
-        private Dictionary<DependencyPropertyWrapper, int> _ProviderBitmasks = new Dictionary<DependencyPropertyWrapper, int>();
-        private List<PropertyValueProvider> _Providers = new List<PropertyValueProvider>();
+        protected Dictionary<DependencyPropertyWrapper, int> _ProviderBitmasks = new Dictionary<DependencyPropertyWrapper, int>();
+        protected List<PropertyValueProvider> _Providers = new List<PropertyValueProvider>();
 
         public static readonly UndefinedObject UNDEFINED = new UndefinedObject { ID = Guid.NewGuid() };
 
@@ -518,6 +518,15 @@ namespace WickedSick.Fayde.Client.NativeEngine
             if (_ProviderBitmasks.ContainsKey(prop))
                 return _ProviderBitmasks[prop];
             return 0;
+        }
+
+        internal void SubscribePropertyChanged(DependencyPropertyWrapper prop, Action<object, ScriptObject> action)
+        {
+            throw new NotImplementedException();
+        }
+        internal void UnsubscribePropertyChanged(DependencyPropertyWrapper prop, Action<object, ScriptObject> action)
+        {
+            throw new NotImplementedException();
         }
     }
 }

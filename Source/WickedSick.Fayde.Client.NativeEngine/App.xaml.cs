@@ -29,8 +29,8 @@ namespace WickedSick.Fayde.Client.NativeEngine
         {
             this.RootVisual = new MainPage();
 
-            var factory = new DependencyObjectFactory();
-            HtmlPage.RegisterScriptableObject("DOFactory", factory);
+            var interop = new DependencyObjectInterop();
+            HtmlPage.RegisterScriptableObject("DOInterop", interop);
         }
 
         private void Application_Exit(object sender, EventArgs e)
