@@ -43,7 +43,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
                 return;
 
             var walker = new DeepStyleWalker(_Styles);
-            SetterWrapper setter;
+            SetterNative setter;
             while ((setter = walker.Step()) != null)
             {
                 var prop = setter.Property;

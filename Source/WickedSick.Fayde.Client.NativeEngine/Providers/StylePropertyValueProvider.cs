@@ -22,7 +22,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
         public override void RecomputePropertyValueOnClear(DependencyPropertyWrapper prop)
         {
             var walker = new DeepStyleWalker(_Style);
-            SetterWrapper setter;
+            SetterNative setter;
             while ((setter = walker.Step()) != null)
             {
                 var walkProp = setter.Property;

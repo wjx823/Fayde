@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Browser;
+﻿using System.Windows.Browser;
 using WickedSick.Fayde.Client.NativeEngine.Controls;
 using WickedSick.Fayde.Client.NativeEngine.Documents;
 using WickedSick.Fayde.Client.NativeEngine.Providers;
@@ -31,7 +29,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
         }
 
         [ScriptableMember]
-        public void RegisterTypes(ScriptObject doCtor, ScriptObject dpCtor, ScriptObject uieCtor, ScriptObject feCtor, ScriptObject ctrlCtor, ScriptObject popupCtor, ScriptObject tbCtor, ScriptObject spanCtor, ScriptObject parCtor, ScriptObject secCtor)
+        public void RegisterTypes(ScriptObject doCtor, ScriptObject dpCtor, ScriptObject uieCtor, ScriptObject feCtor, ScriptObject ctrlCtor, ScriptObject popupCtor, ScriptObject tbCtor, ScriptObject spanCtor, ScriptObject parCtor, ScriptObject secCtor, ScriptObject setterCtor)
         {
             JsCtors.Register<DependencyObjectNative>(doCtor);
             JsCtors.Register<UIElementNative>(uieCtor);
@@ -42,6 +40,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
             JsCtors.Register<SpanNative>(spanCtor);
             JsCtors.Register<ParagraphNative>(parCtor);
             JsCtors.Register<SectionNative>(secCtor);
+            JsCtors.Register<SetterNative>(setterCtor);
 
             var dcp = feCtor.GetProperty("DataContextProperty") as ScriptObject;
             if (dcp != null)
@@ -76,6 +75,13 @@ namespace WickedSick.Fayde.Client.NativeEngine
             var blp = secCtor.GetProperty("BlocksProperty") as ScriptObject;
             if (blp != null)
                 SectionNative.BlocksProperty = DependencyPropertyWrapper.Lookup(blp);
+
+            var prp = setterCtor.GetProperty("PropertyProperty") as ScriptObject;
+            if (prp != null)
+                SetterNative.PropertyProperty = DependencyPropertyWrapper.Lookup(prp);
+            var cvp = setterCtor.GetProperty("ConvertedValueProperty") as ScriptObject;
+            if (cvp != null)
+                SetterNative.ConvertedValueProperty = DependencyPropertyWrapper.Lookup(cvp);
         }
     }
 }
