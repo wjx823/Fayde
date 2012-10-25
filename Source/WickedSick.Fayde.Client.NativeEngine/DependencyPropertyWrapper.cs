@@ -80,11 +80,11 @@ namespace WickedSick.Fayde.Client.NativeEngine
             return _AutoCreator.InvokeSelf("GetValue", @do);
         }
 
-        internal void CallChangedCallback(DependencyObjectNative donative, object args)
+        internal void CallChangedCallback(DependencyObjectNative donative, PropertyChangedEventArgsNative args)
         {
             if (_ChangedCallback == null)
                 return;
-            Object.InvokeSelf("_ChangedCallback", donative, args);
+            Object.InvokeSelf("_ChangedCallback", donative.Object, args.Object);
         }
     }
 }

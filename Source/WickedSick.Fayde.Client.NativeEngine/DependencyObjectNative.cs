@@ -42,6 +42,8 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
         #region Properties
 
+        public static ScriptObject JsCtor { get; set; }
+
         public ScriptObject Object { get; protected set; }
 
         private LazyMember<double> _IDLazy;
@@ -332,7 +334,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
             if (notifyListeners)
             {
-                var args = new object();
+                var args = new PropertyChangedEventArgsNative(prop, oldValue, newValue);
                 CallOnPropertyChanged(args);
                 prop.CallChangedCallback(this, args);
 
@@ -398,9 +400,10 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
         #region Property Changed
 
-        private void CallOnPropertyChanged(object args)
+        private void CallOnPropertyChanged(PropertyChangedEventArgsNative args)
         {
-            Object.InvokeSelf("_OnPropertyChanged", args);
+            RaisePropertyChanged(args);
+            Object.InvokeSelf("_OnPropertyChanged", args.Object);
         }
         private void CallAddPropertyChangedListener(ScriptObject so, DependencyPropertyWrapper prop)
         {
@@ -520,11 +523,15 @@ namespace WickedSick.Fayde.Client.NativeEngine
             return 0;
         }
 
-        internal void SubscribePropertyChanged(DependencyPropertyWrapper prop, Action<object, ScriptObject> action)
+        internal void SubscribePropertyChanged(DependencyPropertyWrapper prop, Action<object, PropertyChangedEventArgsNative> action)
         {
             throw new NotImplementedException();
         }
-        internal void UnsubscribePropertyChanged(DependencyPropertyWrapper prop, Action<object, ScriptObject> action)
+        internal void UnsubscribePropertyChanged(DependencyPropertyWrapper prop, Action<object, PropertyChangedEventArgsNative> action)
+        {
+            throw new NotImplementedException();
+        }
+        private void RaisePropertyChanged(PropertyChangedEventArgsNative args)
         {
             throw new NotImplementedException();
         }

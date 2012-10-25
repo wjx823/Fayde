@@ -42,8 +42,13 @@ namespace WickedSick.Fayde.Client.NativeEngine
         }
 
         [ScriptableMember]
-        public void RegisterDPs(ScriptObject doCtor, ScriptObject uieCtor, ScriptObject feCtor, ScriptObject ctrlCtor)
+        public void RegisterTypes(ScriptObject doCtor, ScriptObject uieCtor, ScriptObject feCtor, ScriptObject ctrlCtor)
         {
+            DependencyObjectNative.JsCtor = doCtor;
+            UIElementNative.JsCtor = uieCtor;
+            FrameworkElementNative.JsCtor = feCtor;
+            ControlNative.JsCtor = ctrlCtor;
+
             var dcp = feCtor.GetProperty("DataContextProperty") as ScriptObject;
             if (dcp != null)
                 InheritedDataContextPropertyValueProvider.DataContextProperty = new DependencyPropertyWrapper(dcp);

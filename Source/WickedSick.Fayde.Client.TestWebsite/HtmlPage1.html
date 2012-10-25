@@ -85,7 +85,7 @@
             SLApp = sender.getHost();
             SL_INTEROP_UNDEFINED = SLApp.Content.DOInterop.CreateUndefined();
             SLApp.Content.DOInterop.RegisterNullstone(Nullstone);
-            SLApp.Content.DOInterop.RegisterDPs(DependencyObject, UIElement, FrameworkElement, Control);
+            SLApp.Content.DOInterop.RegisterTypes(DependencyObject, UIElement, FrameworkElement, Control);
             
             var o;
             //o = null;

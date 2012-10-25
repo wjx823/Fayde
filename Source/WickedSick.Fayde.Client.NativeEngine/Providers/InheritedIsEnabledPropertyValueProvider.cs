@@ -57,7 +57,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
             sourceNative.UnsubscribePropertyChanged(IsEnabledProperty, _IsEnabledChanged);
         }
 
-        private void _IsEnabledChanged(object sender, ScriptObject args)
+        private void _IsEnabledChanged(object sender, PropertyChangedEventArgsNative args)
         {
             this.LocalValueChanged(IsEnabledProperty);
         }

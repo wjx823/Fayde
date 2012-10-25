@@ -52,9 +52,9 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
             sourceNative.UnsubscribePropertyChanged(DataContextProperty, _SourceDataContextChanged);
         }
 
-        private void _SourceDataContextChanged(object sender, ScriptObject args)
+        private void _SourceDataContextChanged(object sender, PropertyChangedEventArgsNative args)
         {
-            _Object._ProviderValueChanged(_Precedence, DataContextProperty, args.GetProperty("OldValue"), args.GetProperty("NewValue"), true, false, false);
+            _Object._ProviderValueChanged(_Precedence, args.Property, args.OldValue, args.NewValue, true, false, false);
         }
 
         internal void EmitChanged()
