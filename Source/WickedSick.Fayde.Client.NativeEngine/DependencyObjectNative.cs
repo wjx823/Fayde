@@ -62,7 +62,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
         [ScriptableMember]
         public object GetValue(ScriptObject prop)
         {
-            return GetValue(new DependencyPropertyWrapper(prop));
+            return GetValue(DependencyPropertyWrapper.Lookup(prop));
         }
         public object GetValue(DependencyPropertyWrapper prop, int startingPrec = PropertyPrecedence.Highest, int endingPrec = PropertyPrecedence.Lowest)
         {
@@ -96,7 +96,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
         [ScriptableMember]
         public void SetValue(ScriptObject prop, object value)
         {
-            SetValue(new DependencyPropertyWrapper(prop), value);
+            SetValue(DependencyPropertyWrapper.Lookup(prop), value);
         }
         private void SetValue(DependencyPropertyWrapper prop, object value)
         {
@@ -116,7 +116,8 @@ namespace WickedSick.Fayde.Client.NativeEngine
         private void DoSetValue(DependencyPropertyWrapper prop, object value)
         {
             var coerced = value;
-            //TODO: Coercing
+            //TODO: Coercer/validate
+            DoSetValueImpl(prop, value);
         }
         private bool DoSetValueImpl(DependencyPropertyWrapper prop, object value)
         {
@@ -429,7 +430,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
         private void CallOnPropertyChanged(PropertyChangedEventArgsNative args)
         {
             RaisePropertyChanged(args);
-            Object.InvokeSelf("_OnPropertyChanged", args.Object);
+            Object.Invoke("_OnPropertyChanged", args.Object, null);
         }
         private void CallAddPropertyChangedListener(ScriptObject so, DependencyPropertyWrapper prop)
         {

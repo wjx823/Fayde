@@ -10,10 +10,10 @@ namespace WickedSick.Fayde.Client.NativeEngine
             OldValue = oldValue;
             NewValue = newValue;
 
-            var so = HtmlPage.Window.CreateInstance("Object");
-            so.SetProperty("Property", Property.Object);
-            so.SetProperty("OldValue", OldValue);
-            so.SetProperty("NewValue", NewValue);
+            Object = HtmlPage.Window.CreateInstance("Object");
+            Object.SetProperty("Property", Property.Object);
+            Object.SetProperty("OldValue", OldValue);
+            Object.SetProperty("NewValue", NewValue);
         }
 
         public ScriptObject Object { get; set; }

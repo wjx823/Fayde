@@ -45,37 +45,37 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
             var dcp = feCtor.GetProperty("DataContextProperty") as ScriptObject;
             if (dcp != null)
-                InheritedDataContextPropertyValueProvider.DataContextProperty = new DependencyPropertyWrapper(dcp);
+                InheritedDataContextPropertyValueProvider.DataContextProperty = DependencyPropertyWrapper.Lookup(dcp);
             var awp = feCtor.GetProperty("ActualWidthProperty") as ScriptObject;
             if (awp != null)
-                FrameworkElementPropertyValueProvider.ActualWidthProperty = new DependencyPropertyWrapper(awp);
+                FrameworkElementPropertyValueProvider.ActualWidthProperty = DependencyPropertyWrapper.Lookup(awp);
             var ahp = feCtor.GetProperty("ActualHeightProperty") as ScriptObject;
             if (ahp != null)
-                FrameworkElementPropertyValueProvider.ActualHeightProperty = new DependencyPropertyWrapper(ahp);
+                FrameworkElementPropertyValueProvider.ActualHeightProperty = DependencyPropertyWrapper.Lookup(ahp);
 
             var iep = ctrlCtor.GetProperty("IsEnabledProperty") as ScriptObject;
             if (iep != null)
-                InheritedIsEnabledPropertyValueProvider.IsEnabledProperty = new DependencyPropertyWrapper(iep);
+                InheritedIsEnabledPropertyValueProvider.IsEnabledProperty = DependencyPropertyWrapper.Lookup(iep);
 
             var cp = popupCtor.GetProperty("ChildProperty") as ScriptObject;
             if (cp != null)
-                PopupNative.ChildProperty = new DependencyPropertyWrapper(cp);
+                PopupNative.ChildProperty = DependencyPropertyWrapper.Lookup(cp);
 
             var inp = tbCtor.GetProperty("InlinesProperty") as ScriptObject;
             if (inp != null)
-                TextBlockNative.InlinesProperty = new DependencyPropertyWrapper(inp);
+                TextBlockNative.InlinesProperty = DependencyPropertyWrapper.Lookup(inp);
 
             inp = spanCtor.GetProperty("InlinesProperty") as ScriptObject;
             if (inp != null)
-                SpanNative.InlinesProperty = new DependencyPropertyWrapper(inp);
+                SpanNative.InlinesProperty = DependencyPropertyWrapper.Lookup(inp);
 
             inp = parCtor.GetProperty("InlinesProperty") as ScriptObject;
             if (inp != null)
-                ParagraphNative.InlinesProperty = new DependencyPropertyWrapper(inp);
+                ParagraphNative.InlinesProperty = DependencyPropertyWrapper.Lookup(inp);
 
             var blp = secCtor.GetProperty("BlocksProperty") as ScriptObject;
             if (blp != null)
-                SectionNative.BlocksProperty = new DependencyPropertyWrapper(blp);
+                SectionNative.BlocksProperty = DependencyPropertyWrapper.Lookup(blp);
         }
     }
 }

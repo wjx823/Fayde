@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Browser;
 using WickedSick.Fayde.Client.NativeEngine.Providers;
 
@@ -6,6 +7,18 @@ namespace WickedSick.Fayde.Client.NativeEngine
 {
     public class DependencyPropertyWrapper : INullstoneObjectWrapper
     {
+        private static Dictionary<double, DependencyPropertyWrapper> _Registered = new Dictionary<double, DependencyPropertyWrapper>();
+
+        public static DependencyPropertyWrapper Lookup(ScriptObject jsProp)
+        {
+            var id = (double)jsProp.GetProperty("_ID");
+            if (_Registered.ContainsKey(id))
+                return _Registered[id];
+            var prop = new DependencyPropertyWrapper(jsProp);
+            _Registered[id] = prop;
+            return prop; 
+        }
+
         public DependencyPropertyWrapper(ScriptObject @object)
         {
             Object = @object;
@@ -86,6 +99,5 @@ namespace WickedSick.Fayde.Client.NativeEngine
                 return;
             Object.InvokeSelf("_ChangedCallback", donative.Object, args.Object);
         }
-
     }
 }

@@ -26,26 +26,28 @@
         }
         CustomType._TypeName = "CustomType";
 
-        var TestProp = new DependencyProperty("Test", undefined, undefined, 1);
-
         Fayde.SL_INTEROP_UNDEFINED = null;
+
 
         var TestType = Nullstone.Create("TestType", UIElement);
         TestType.Instance.Init = function () {
+            this.Init$UIElement();
             this._Native = Fayde.NInterop.CreateObjectNative(this);
         };
-        TestType.prototype.SetValue = function (prop, value) {
+        TestType.TestProp = DependencyProperty.Register("Test", function () { return Object; }, TestType, 1);
+        TestType.Instance.SetValue = function (prop, value) {
             if (value === undefined)
                 value = Fayde.SL_INTEROP_UNDEFINED;
             this._Native.SetValue(prop, value);
         };
-        TestType.prototype.GetValue = function (prop) {
+        TestType.Instance.GetValue = function (prop) {
             var val = this._Native.GetValue(prop);
             if (val && val.toString() === Fayde.SL_INTEROP_UNDEFINED.toString())
                 return;
             return val;
         };
         Nullstone.FinishCreate(TestType);
+
 
         var SLApp;
         function onSilverlightError(sender, args) {
@@ -94,9 +96,11 @@
             o = new CustomType();
 
             var testobject = new TestType();
-            testobject.SetValue(TestProp, o);
-            var rv = testobject.GetValue(TestProp);
-            
+            rv = testobject.GetValue(TestType.TestProp);
+            alert(rv);
+
+            testobject.SetValue(TestType.TestProp, o);
+            var rv = testobject.GetValue(TestType.TestProp);
             alert(rv);
         }
     </script>
