@@ -3,7 +3,7 @@ using System.Windows.Browser;
 
 namespace WickedSick.Fayde.Client.NativeEngine.Providers
 {
-    public class InheritedDataContextPropertyValueProvider : PropertyValueProvider
+    public class InheritedDataContextPropertyValueProvider : PropertyValueProvider, IPropertyChangedListener
     {
         public static DependencyPropertyWrapper DataContextProperty;
 
@@ -43,18 +43,13 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
         {
             if (sourceNative == null)
                 return;
-            sourceNative.SubscribePropertyChanged(DataContextProperty, _SourceDataContextChanged);
+             sourceNative.SubscribePropertyChanged(DataContextProperty, this);
         }
         private void _DetachListener(FrameworkElementNative sourceNative)
         {
             if (sourceNative == null)
                 return;
-            sourceNative.UnsubscribePropertyChanged(DataContextProperty, _SourceDataContextChanged);
-        }
-
-        private void _SourceDataContextChanged(object sender, PropertyChangedEventArgsNative args)
-        {
-            _Object._ProviderValueChanged(_Precedence, args.Property, args.OldValue, args.NewValue, true, false, false);
+            sourceNative.UnsubscribePropertyChanged(DataContextProperty, this);
         }
 
         internal void EmitChanged()
@@ -63,6 +58,11 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
             {
                 _Object._ProviderValueChanged(_Precedence, DataContextProperty, DependencyObjectNative.UNDEFINED, _Source.GetValue(DataContextProperty), true, false, false);
             }
+        }
+        
+        public void PropertyChanged(object sender, PropertyChangedEventArgsNative args)
+        {
+            _Object._ProviderValueChanged(_Precedence, args.Property, args.OldValue, args.NewValue, true, false, false);
         }
     }
 }

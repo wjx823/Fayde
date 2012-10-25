@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Browser;
 using WickedSick.Fayde.Client.NativeEngine.Providers;
@@ -523,17 +524,35 @@ namespace WickedSick.Fayde.Client.NativeEngine
             return 0;
         }
 
-        internal void SubscribePropertyChanged(DependencyPropertyWrapper prop, Action<object, PropertyChangedEventArgsNative> action)
+
+        private List<WeakPropertyChangedHandler> _PropertyChangedListeners = new List<WeakPropertyChangedHandler>();
+        internal void SubscribePropertyChanged(DependencyPropertyWrapper prop, IPropertyChangedListener listener)
         {
-            throw new NotImplementedException();
+            _PropertyChangedListeners.Add(new WeakPropertyChangedHandler(listener, prop));
         }
-        internal void UnsubscribePropertyChanged(DependencyPropertyWrapper prop, Action<object, PropertyChangedEventArgsNative> action)
+        internal void UnsubscribePropertyChanged(DependencyPropertyWrapper prop, IPropertyChangedListener listener)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < _PropertyChangedListeners.Count; i++)
+            {
+                var pcl = _PropertyChangedListeners[i];
+                if (pcl.Property == prop && pcl.WeakListener.Target == listener)
+                {
+                    _PropertyChangedListeners.RemoveAt(i);
+                    i--;
+                }
+            }
         }
         private void RaisePropertyChanged(PropertyChangedEventArgsNative args)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < _PropertyChangedListeners.Count; i++)
+            {
+                var listener = _PropertyChangedListeners[i];
+                if (!listener.Handle(this, args))
+                {
+                    _PropertyChangedListeners.RemoveAt(i);
+                    i--;
+                }
+            }
         }
     }
 }

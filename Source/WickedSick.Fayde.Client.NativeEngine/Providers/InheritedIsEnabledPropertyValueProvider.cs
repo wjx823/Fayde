@@ -3,7 +3,7 @@ using System.Windows.Browser;
 
 namespace WickedSick.Fayde.Client.NativeEngine.Providers
 {
-    public class InheritedIsEnabledPropertyValueProvider : PropertyValueProvider
+    public class InheritedIsEnabledPropertyValueProvider : PropertyValueProvider, IPropertyChangedListener
     {
         public static DependencyPropertyWrapper IsEnabledProperty;
 
@@ -48,18 +48,13 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
         {
             if (sourceNative == null)
                 return;
-            sourceNative.SubscribePropertyChanged(IsEnabledProperty, _IsEnabledChanged);
+            sourceNative.SubscribePropertyChanged(IsEnabledProperty, this);
         }
         private void _DetachListener(ControlNative sourceNative)
         {
             if (sourceNative == null)
                 return;
-            sourceNative.UnsubscribePropertyChanged(IsEnabledProperty, _IsEnabledChanged);
-        }
-
-        private void _IsEnabledChanged(object sender, PropertyChangedEventArgsNative args)
-        {
-            this.LocalValueChanged(IsEnabledProperty);
+            sourceNative.UnsubscribePropertyChanged(IsEnabledProperty, this);
         }
 
         public bool LocalValueChanged(DependencyPropertyWrapper prop)
@@ -86,6 +81,11 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
             if (val == DependencyObjectNative.UNDEFINED)
                 return false;
             return val is bool && (bool)val;
+        }
+
+        public void PropertyChanged(object sender, PropertyChangedEventArgsNative args)
+        {
+            this.LocalValueChanged(IsEnabledProperty);
         }
     }
 }

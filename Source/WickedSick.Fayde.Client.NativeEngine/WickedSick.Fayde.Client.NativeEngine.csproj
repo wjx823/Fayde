@@ -80,6 +80,7 @@
     <Compile Include="DependencyPropertyWrapper.cs" />
     <Compile Include="FrameworkElementNative.cs" />
     <Compile Include="INullstoneObjectWrapper.cs" />
+    <Compile Include="IPropertyChangedListener.cs" />
     <Compile Include="JsTypeNames.cs" />
     <Compile Include="LazyMember.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -102,6 +103,7 @@
     <Compile Include="Providers\StylePropertyValueProvider.cs" />
     <Compile Include="UIElementNative.cs" />
     <Compile Include="UndefinedObject.cs" />
+    <Compile Include="WeakPropertyChangedHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
