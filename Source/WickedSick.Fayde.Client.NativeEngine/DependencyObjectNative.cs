@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Browser;
 using WickedSick.Fayde.Client.NativeEngine.Providers;
 
@@ -420,7 +421,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
         internal virtual IEnumerable<DependencyObjectNative> GetChildrenForInheritedPropagation()
         {
-            throw new NotImplementedException();
+            return Enumerable.Empty<DependencyObjectNative>();
         }
 
         #endregion
