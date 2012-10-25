@@ -16,6 +16,11 @@ UIElementCollection.Instance.GetValueAtZIndex = function (index) {
 UIElementCollection.Instance.GetZSortedCount = function () {
     return this._ZSorted.length;
 };
+UIElementCollection.Instance.EnsureZSorted = function () {
+    if (this._ZSorted.length === this._ht.length)
+        return;
+    this.ResortByZIndex();
+};
 UIElementCollection.Instance.ResortByZIndex = function () {
     var count = this.GetCount();
     this._ZSorted = new Array(count);

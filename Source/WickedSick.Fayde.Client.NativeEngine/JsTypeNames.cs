@@ -8,5 +8,6 @@ namespace WickedSick.Fayde.Client.NativeEngine
         public const string Collection = "Collection";
         public const string UIElement = "UIElement";
         public const string FrameworkElement = "FrameworkElement";
+        public const string UIElementCollection = "UIElementCollection";
     }
 }

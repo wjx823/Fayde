@@ -38,9 +38,7 @@ _VisualTreeWalker.prototype.Step = function () {
         }
 
         if (this._Direction === _VisualTreeWalkerDirection.ZForward || this._Direction === _VisualTreeWalkerDirection.ZReverse) {
-            if (this._Collection.GetZSortedCount() != count) {
-                this._Collection.ResortByZIndex();
-            }
+            this._Collection.EnsureZSorted();
         }
 
         switch (this._Direction) {

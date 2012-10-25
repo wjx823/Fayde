@@ -12,7 +12,19 @@ namespace WickedSick.Fayde.Client.NativeEngine
             Object = @object;
         }
 
-        public DependencyPropertyWrapper Property { get { throw new NotImplementedException(); } }
-        public object ConvertedValue { get { throw new NotImplementedException(); } }
+        public DependencyPropertyWrapper Property
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+        public object ConvertedValue
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }
