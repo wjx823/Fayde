@@ -42,9 +42,10 @@ namespace WickedSick.Fayde.Client.NativeEngine
         }
 
         [ScriptableMember]
-        public void RegisterTypes(ScriptObject doCtor, ScriptObject uieCtor, ScriptObject feCtor, ScriptObject ctrlCtor)
+        public void RegisterTypes(ScriptObject doCtor, ScriptObject dpCtor, ScriptObject uieCtor, ScriptObject feCtor, ScriptObject ctrlCtor)
         {
             DependencyObjectNative.JsCtor = doCtor;
+            DependencyPropertyWrapper.JsCtor = dpCtor;
             UIElementNative.JsCtor = uieCtor;
             FrameworkElementNative.JsCtor = feCtor;
             ControlNative.JsCtor = ctrlCtor;

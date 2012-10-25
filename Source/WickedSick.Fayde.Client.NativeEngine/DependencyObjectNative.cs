@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Browser;
 using WickedSick.Fayde.Client.NativeEngine.Providers;
@@ -65,9 +64,9 @@ namespace WickedSick.Fayde.Client.NativeEngine
         [ScriptableMember]
         public object GetValue(ScriptObject prop)
         {
-            return GetValue(new DependencyPropertyWrapper(prop), PropertyPrecedence.LocalValue, PropertyPrecedence.Highest);
+            return GetValue(new DependencyPropertyWrapper(prop));
         }
-        public object GetValue(DependencyPropertyWrapper prop, int startingPrec = PropertyPrecedence.Lowest, int endingPrec = PropertyPrecedence.Highest)
+        public object GetValue(DependencyPropertyWrapper prop, int startingPrec = PropertyPrecedence.Highest, int endingPrec = PropertyPrecedence.Lowest)
         {
             var bitmask = GetProviderBitmask(prop) | prop.BitmaskCache;
             for (int i = startingPrec; i <= endingPrec; i++)
@@ -364,7 +363,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
         #region Inherited Helpers
 
-        internal bool _PropagateInheritedValue(int inheritable, object source, object newValue)
+        internal bool _PropagateInheritedValue(int inheritable, DependencyObjectNative source, object newValue)
         {
             if (InheritedProvider == null)
                 return true;
@@ -383,7 +382,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
                 return null;
             return InheritedProvider.GetPropertySource(inheritable);
         }
-        internal void _SetInheritedValueSource(int inheritable, object source)
+        internal void _SetInheritedValueSource(int inheritable, DependencyObjectNative source)
         {
             if (InheritedProvider == null)
                 return;
@@ -395,6 +394,27 @@ namespace WickedSick.Fayde.Client.NativeEngine
                 _ProviderBitmasks[prop] = GetProviderBitmask(prop) & ~(1 << PropertyPrecedence.Inherited);
             }
             InheritedProvider.SetPropertySource(inheritable, source);
+        }
+
+        internal int GetPropertyValueProvider(DependencyPropertyWrapper prop)
+        {
+            var bitmask = _ProviderBitmasks[prop];
+            for (int i = 0; i < PropertyPrecedence.Lowest; i++)
+            {
+                var p = 1 << i;
+                if ((bitmask & p) == p)
+                    return i;
+                if (i == PropertyPrecedence.DefaultValue && prop._HasDefaultValue)
+                    return i;
+                if (i == PropertyPrecedence.AutoCreate && prop._IsAutoCreated)
+                    return i;
+            }
+            return -1;
+        }
+
+        internal virtual IEnumerable<DependencyObjectNative> GetChildrenForInheritedPropagation()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

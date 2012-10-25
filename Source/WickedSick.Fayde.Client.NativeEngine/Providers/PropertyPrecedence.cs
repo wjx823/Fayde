@@ -15,8 +15,8 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
         public const int DefaultValue = 7;
         public const int AutoCreate = 8;
 
-        public const int Lowest = IsEnabled;
-        public const int Highest = AutoCreate;
+        public const int Lowest = AutoCreate;
+        public const int Highest = IsEnabled;
         public const int Count = 9;
     }
 }

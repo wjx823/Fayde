@@ -75,7 +75,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
             return false;
         }
 
-        private static bool GetIsEnabledValue(DependencyObjectNative @object, int startingPrecedence = PropertyPrecedence.Lowest)
+        private static bool GetIsEnabledValue(DependencyObjectNative @object, int startingPrecedence = PropertyPrecedence.Highest)
         {
             var val = @object.GetValue(IsEnabledProperty, startingPrecedence);
             if (val == DependencyObjectNative.UNDEFINED)

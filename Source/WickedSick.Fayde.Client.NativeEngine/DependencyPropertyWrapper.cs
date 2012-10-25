@@ -21,6 +21,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
             _InheritableLazy = new LazyMember<double>(@object, "_Inheritable");
         }
 
+        public static ScriptObject JsCtor { get; set; }
         public ScriptObject Object { get; protected set; }
 
         #region Javascript Members
@@ -86,5 +87,6 @@ namespace WickedSick.Fayde.Client.NativeEngine
                 return;
             Object.InvokeSelf("_ChangedCallback", donative.Object, args.Object);
         }
+
     }
 }

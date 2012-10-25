@@ -1,4 +1,5 @@
-﻿using System.Windows.Browser;
+﻿using System.Collections.Generic;
+using System.Windows.Browser;
 using WickedSick.Fayde.Client.NativeEngine.Providers;
 
 namespace WickedSick.Fayde.Client.NativeEngine
@@ -14,5 +15,11 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
         private LazyMember<UIElementNative> _VisualParentLazy;
         internal UIElementNative VisualParent { get { return _VisualParentLazy.Value; } }
+
+        internal override IEnumerable<DependencyObjectNative> GetChildrenForInheritedPropagation()
+        {
+            //VisualTreeWalker
+            return base.GetChildrenForInheritedPropagation();
+        }
     }
 }
