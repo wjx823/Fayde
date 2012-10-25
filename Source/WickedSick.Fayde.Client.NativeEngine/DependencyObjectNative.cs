@@ -30,7 +30,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
             Object = @object;
             _IDLazy = new LazyMember<double>(@object, "_ID");
 
-            for (int i = 0; i <= PropertyPrecedence.Highest; i++)
+            for (int i = 0; i <= PropertyPrecedence.Lowest; i++)
             {
                 _Providers.Add(null);
             }
@@ -41,8 +41,6 @@ namespace WickedSick.Fayde.Client.NativeEngine
         }
 
         #region Properties
-
-        public static ScriptObject JsCtor { get; set; }
 
         public ScriptObject Object { get; protected set; }
 
@@ -77,11 +75,18 @@ namespace WickedSick.Fayde.Client.NativeEngine
                 if (provider == null)
                     continue;
                 var val = provider.GetPropertyValue(prop);
-                if (val != DependencyObjectNative.UNDEFINED)
+                if (val == DependencyObjectNative.UNDEFINED)
                     continue;
                 return val;
             }
             return DependencyObjectNative.UNDEFINED;
+        }
+        internal object GetValueNoAutoCreate(DependencyPropertyWrapper prop)
+        {
+            var v = GetValue(prop, PropertyPrecedence.LocalValue, PropertyPrecedence.InheritedDataContext);
+            if (v == DependencyObjectNative.UNDEFINED && prop._IsAutoCreated)
+                v = AutoCreateProvider.ReadLocalValue(prop);
+            return v;
         }
 
         #endregion
@@ -369,7 +374,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
                 return true;
 
             InheritedProvider.SetPropertySource(inheritable, source);
-            var prop = InheritedPropertyValueProvider.GetProperty(inheritable, Object);
+            var prop = InheritedPropertyValueProvider.GetProperty(inheritable, this);
             if (prop == null)
                 return false;
 
@@ -388,7 +393,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
                 return;
             if (source == null)
             {
-                var prop = InheritedPropertyValueProvider.GetProperty(inheritable, Object);
+                var prop = InheritedPropertyValueProvider.GetProperty(inheritable, this);
                 if (prop == null)
                     return;
                 _ProviderBitmasks[prop] = GetProviderBitmask(prop) & ~(1 << PropertyPrecedence.Inherited);

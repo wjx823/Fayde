@@ -2,7 +2,7 @@
 using System.Windows.Browser;
 using WickedSick.Fayde.Client.NativeEngine.Providers;
 
-namespace WickedSick.Fayde.Client.NativeEngine
+namespace WickedSick.Fayde.Client.NativeEngine.Controls
 {
     public class ControlNative : FrameworkElementNative
     {

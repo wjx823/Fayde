@@ -170,7 +170,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
                 inh = 0;
             return inh;
         }
-        public static DependencyPropertyWrapper GetProperty(int inheritable, object ancestor)
+        public static DependencyPropertyWrapper GetProperty(int inheritable, DependencyObjectNative ancestor)
         {
             throw new NotImplementedException();
         }

@@ -28,23 +28,24 @@
 
         var TestProp = new DependencyProperty("Test", undefined, undefined, 1);
 
-        var SL_INTEROP_UNDEFINED;
+        Fayde.SL_INTEROP_UNDEFINED = null;
 
-        function TestType() {
-            this._ID = Nullstone._LastID = Nullstone._LastID + 1;
-            this._Native = SLApp.Content.DOInterop.CreateDependencyObjectNative(this);
-        }
+        var TestType = Nullstone.Create("TestType", UIElement);
+        TestType.Instance.Init = function () {
+            this._Native = Fayde.NInterop.CreateObjectNative(this);
+        };
         TestType.prototype.SetValue = function (prop, value) {
             if (value === undefined)
-                value = SL_INTEROP_UNDEFINED;
+                value = Fayde.SL_INTEROP_UNDEFINED;
             this._Native.SetValue(prop, value);
         };
         TestType.prototype.GetValue = function (prop) {
             var val = this._Native.GetValue(prop);
-            if (val && val.toString() === SL_INTEROP_UNDEFINED.toString())
+            if (val && val.toString() === Fayde.SL_INTEROP_UNDEFINED.toString())
                 return;
             return val;
         };
+        Nullstone.FinishCreate(TestType);
 
         var SLApp;
         function onSilverlightError(sender, args) {
@@ -83,10 +84,11 @@
         }
         function pluginLoaded(sender, args) {
             SLApp = sender.getHost();
-            SL_INTEROP_UNDEFINED = SLApp.Content.DOInterop.CreateUndefined();
-            SLApp.Content.DOInterop.RegisterNullstone(Nullstone);
-            SLApp.Content.DOInterop.RegisterTypes(DependencyObject, DependencyProperty, UIElement, FrameworkElement, Control);
-            
+            Fayde.NInterop = SLApp.Content.DOInterop;
+            Fayde.SL_INTEROP_UNDEFINED = Fayde.NInterop.CreateUndefined();
+            Fayde.NInterop.RegisterNullstone(Nullstone);
+            Fayde.NInterop.RegisterTypes(DependencyObject, DependencyProperty, UIElement, FrameworkElement, Control, Popup, TextBlock, Span, Paragraph, Section);
+
             var o;
             //o = null;
             o = new CustomType();
@@ -94,7 +96,7 @@
             var testobject = new TestType();
             testobject.SetValue(TestProp, o);
             var rv = testobject.GetValue(TestProp);
-
+            
             alert(rv);
         }
     </script>

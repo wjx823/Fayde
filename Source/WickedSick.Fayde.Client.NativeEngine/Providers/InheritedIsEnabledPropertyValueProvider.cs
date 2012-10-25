@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Browser;
+using WickedSick.Fayde.Client.NativeEngine.Controls;
 
 namespace WickedSick.Fayde.Client.NativeEngine.Providers
 {

@@ -74,19 +74,22 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ControlNative.cs" />
+    <Compile Include="Controls\ControlNative.cs" />
     <Compile Include="DependencyObjectNative.cs" />
     <Compile Include="DependencyObjectInterop.cs" />
     <Compile Include="DependencyPropertyWrapper.cs" />
     <Compile Include="FrameworkElementNative.cs" />
     <Compile Include="INullstoneObjectWrapper.cs" />
     <Compile Include="IPropertyChangedListener.cs" />
+    <Compile Include="JsCtors.cs" />
     <Compile Include="JsTypeNames.cs" />
     <Compile Include="LazyMember.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Nullstone.cs" />
+    <Compile Include="Documents\ParagraphNative.cs" />
+    <Compile Include="PopupNative.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyChangedEventArgsNative.cs" />
     <Compile Include="Providers\AutoCreatePropertyValueProvider.cs" />
@@ -102,6 +105,10 @@
     <Compile Include="Providers\PropertyPrecedence.cs" />
     <Compile Include="Providers\PropertyValueProvider.cs" />
     <Compile Include="Providers\StylePropertyValueProvider.cs" />
+    <Compile Include="Documents\SectionNative.cs" />
+    <Compile Include="Documents\SpanNative.cs" />
+    <Compile Include="Controls\TextBlockNative.cs" />
+    <Compile Include="Documents\TextElementNative.cs" />
     <Compile Include="UIElementNative.cs" />
     <Compile Include="UndefinedObject.cs" />
     <Compile Include="WeakPropertyChangedHandler.cs" />

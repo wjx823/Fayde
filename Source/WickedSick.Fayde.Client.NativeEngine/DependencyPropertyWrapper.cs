@@ -18,10 +18,9 @@ namespace WickedSick.Fayde.Client.NativeEngine
             _IsCustomLazy = new LazyMember<bool?>(@object, "_IsCustom");
             _AlwaysChangeLazy = new LazyMember<bool?>(@object, "_AlwaysChange");
             _ChangedCallbackLazy = new LazyMember<object>(@object, "_ChangedCallback");
-            _InheritableLazy = new LazyMember<double>(@object, "_Inheritable");
+            _InheritableLazy = new LazyMember<double?>(@object, "_Inheritable");
         }
 
-        public static ScriptObject JsCtor { get; set; }
         public ScriptObject Object { get; protected set; }
 
         #region Javascript Members
@@ -53,8 +52,8 @@ namespace WickedSick.Fayde.Client.NativeEngine
         private LazyMember<object> _ChangedCallbackLazy;
         public object _ChangedCallback { get { return _ChangedCallbackLazy.Value; } }
 
-        private LazyMember<double> _InheritableLazy;
-        public int _Inheritable { get { return (int)_InheritableLazy.Value; } }
+        private LazyMember<double?> _InheritableLazy;
+        public int _Inheritable { get { return (int)(_InheritableLazy.Value ?? 0.0); } }
 
         #endregion
 
