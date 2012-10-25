@@ -45,7 +45,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Walkers
                     style = style.GetProperty("BasedOn") as ScriptObject;
                 }
             }
-            throw new NotImplementedException();
+            _Setters = list.OrderBy(GetSetterPropertyID).ToArray();
         }
 
         /// <summary>
