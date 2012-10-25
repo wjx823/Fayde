@@ -364,7 +364,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
         #region Inherited Helpers
 
-        private bool _PropagateInheritedValue(int inheritable, object source, object newValue)
+        internal bool _PropagateInheritedValue(int inheritable, object source, object newValue)
         {
             if (InheritedProvider == null)
                 return true;
@@ -377,13 +377,13 @@ namespace WickedSick.Fayde.Client.NativeEngine
             _ProviderValueChanged(PropertyPrecedence.Inherited, prop, UNDEFINED, newValue, true, false, false);
             return true;
         }
-        private object _GetInheritedValueSource(int inheritable)
+        internal object _GetInheritedValueSource(int inheritable)
         {
             if (InheritedProvider == null)
                 return null;
             return InheritedProvider.GetPropertySource(inheritable);
         }
-        private void _SetInheritedValueSource(int inheritable, object source)
+        internal void _SetInheritedValueSource(int inheritable, object source)
         {
             if (InheritedProvider == null)
                 return;
@@ -413,6 +413,36 @@ namespace WickedSick.Fayde.Client.NativeEngine
         private void CallRemovePropertyChangedListener(ScriptObject so, DependencyPropertyWrapper prop)
         {
             Object.InvokeSelf("RemovePropertyChangedListener", so, prop.Object);
+        }
+
+        private List<WeakPropertyChangedHandler> _PropertyChangedListeners = new List<WeakPropertyChangedHandler>();
+        internal void SubscribePropertyChanged(DependencyPropertyWrapper prop, IPropertyChangedListener listener)
+        {
+            _PropertyChangedListeners.Add(new WeakPropertyChangedHandler(listener, prop));
+        }
+        internal void UnsubscribePropertyChanged(DependencyPropertyWrapper prop, IPropertyChangedListener listener)
+        {
+            for (int i = 0; i < _PropertyChangedListeners.Count; i++)
+            {
+                var pcl = _PropertyChangedListeners[i];
+                if (pcl.Property == prop && pcl.WeakListener.Target == listener)
+                {
+                    _PropertyChangedListeners.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+        private void RaisePropertyChanged(PropertyChangedEventArgsNative args)
+        {
+            for (int i = 0; i < _PropertyChangedListeners.Count; i++)
+            {
+                var listener = _PropertyChangedListeners[i];
+                if (!listener.Handle(this, args))
+                {
+                    _PropertyChangedListeners.RemoveAt(i);
+                    i--;
+                }
+            }
         }
 
         #endregion
@@ -522,37 +552,6 @@ namespace WickedSick.Fayde.Client.NativeEngine
             if (_ProviderBitmasks.ContainsKey(prop))
                 return _ProviderBitmasks[prop];
             return 0;
-        }
-
-
-        private List<WeakPropertyChangedHandler> _PropertyChangedListeners = new List<WeakPropertyChangedHandler>();
-        internal void SubscribePropertyChanged(DependencyPropertyWrapper prop, IPropertyChangedListener listener)
-        {
-            _PropertyChangedListeners.Add(new WeakPropertyChangedHandler(listener, prop));
-        }
-        internal void UnsubscribePropertyChanged(DependencyPropertyWrapper prop, IPropertyChangedListener listener)
-        {
-            for (int i = 0; i < _PropertyChangedListeners.Count; i++)
-            {
-                var pcl = _PropertyChangedListeners[i];
-                if (pcl.Property == prop && pcl.WeakListener.Target == listener)
-                {
-                    _PropertyChangedListeners.RemoveAt(i);
-                    i--;
-                }
-            }
-        }
-        private void RaisePropertyChanged(PropertyChangedEventArgsNative args)
-        {
-            for (int i = 0; i < _PropertyChangedListeners.Count; i++)
-            {
-                var listener = _PropertyChangedListeners[i];
-                if (!listener.Handle(this, args))
-                {
-                    _PropertyChangedListeners.RemoveAt(i);
-                    i--;
-                }
-            }
         }
     }
 }

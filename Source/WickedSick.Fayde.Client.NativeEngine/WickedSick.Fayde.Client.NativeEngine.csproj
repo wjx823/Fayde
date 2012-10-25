@@ -94,6 +94,7 @@
     <Compile Include="Providers\FrameworkElementPropertyValueProvider.cs" />
     <Compile Include="Providers\ImplicitStylePropertyValueProvider.cs" />
     <Compile Include="Providers\Inheritable.cs" />
+    <Compile Include="Providers\InheritedContext.cs" />
     <Compile Include="Providers\InheritedDataContextPropertyValueProvider.cs" />
     <Compile Include="Providers\InheritedIsEnabledPropertyValueProvider.cs" />
     <Compile Include="Providers\InheritedPropertyValueProvider.cs" />

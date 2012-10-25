@@ -58,16 +58,74 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
 
         public void PropagateInheritedProperty(DependencyPropertyWrapper prop, DependencyObjectNative source, DependencyObjectNative subtree)
         {
-            throw new NotImplementedException();
+            var inheritable = GetInheritable(source, prop);
+            if (inheritable == 0)
+                return;
+            var objContext = InheritedContext.FromObject(_Object, new InheritedContext());
+            WalkSubTree(source, subtree, objContext, inheritable, true);
         }
 
         public void PropagateInheritedPropertiesOnAddingToTree(DependencyObjectNative subtree)
         {
-            throw new NotImplementedException();
+            var baseContext = new InheritedContext
+            {
+                ForegroundSource = GetPropertySource(Inheritable.Foreground),
+                FontFamilySource = GetPropertySource(Inheritable.FontFamily),
+                FontStretchSource = GetPropertySource(Inheritable.FontStretch),
+                FontStyleSource = GetPropertySource(Inheritable.FontStyle),
+                FontWeightSource = GetPropertySource(Inheritable.FontWeight),
+                FontSizeSource = GetPropertySource(Inheritable.FontSize),
+                LanguageSource = GetPropertySource(Inheritable.Language),
+                FlowDirectionSource = GetPropertySource(Inheritable.FlowDirection),
+                UseLayoutRoundingSource = GetPropertySource(Inheritable.UseLayoutRounding),
+                TextDecorationsSource = GetPropertySource(Inheritable.TextDecorations),
+            };
+            var objContext = InheritedContext.FromObject(_Object, baseContext);
+            WalkTree(_Object, subtree, objContext, Inheritable.All, true);
         }
         public void ClearInheritedPropertiesOnRemovingFromTree(DependencyObjectNative subtree)
         {
+            var baseContext = new InheritedContext
+            {
+                ForegroundSource = GetPropertySource(Inheritable.Foreground),
+                FontFamilySource = GetPropertySource(Inheritable.FontFamily),
+                FontStretchSource = GetPropertySource(Inheritable.FontStretch),
+                FontStyleSource = GetPropertySource(Inheritable.FontStyle),
+                FontWeightSource = GetPropertySource(Inheritable.FontWeight),
+                FontSizeSource = GetPropertySource(Inheritable.FontSize),
+                LanguageSource = GetPropertySource(Inheritable.Language),
+                FlowDirectionSource = GetPropertySource(Inheritable.FlowDirection),
+                UseLayoutRoundingSource = GetPropertySource(Inheritable.UseLayoutRounding),
+                TextDecorationsSource = GetPropertySource(Inheritable.TextDecorations),
+            };
+            var objContext = InheritedContext.FromObject(_Object, baseContext);
+            WalkTree(_Object, subtree, objContext, Inheritable.All, false);
+        }
+
+
+        private void WalkSubTree(DependencyObjectNative rootParent, DependencyObjectNative element, InheritedContext context, int props, bool adding)
+        {
             throw new NotImplementedException();
+        }
+        private void WalkTree(DependencyObjectNative rootParent, DependencyObjectNative element, InheritedContext context, int props, bool adding)
+        {
+            throw new NotImplementedException();
+        }
+        private void MaybePropagateInheritedValue(DependencyObjectNative source, int prop, int props, DependencyObjectNative element)
+        {
+            if (source == null) return;
+            if ((props & prop) == 0) return;
+            var sourceProp = GetProperty(prop, source);
+            var val = source.GetValue(sourceProp);
+            if (val != null && val != DependencyObjectNative.UNDEFINED)
+                element._PropagateInheritedValue(prop, source, val);
+        }
+        private void MaybeRemoveInheritedValue(DependencyObjectNative source, int prop, int props, DependencyObjectNative element)
+        {
+            if (source == null) return;
+            if ((props & prop) == 0) return;
+            if (Nullstone.RefEquals(source, element._GetInheritedValueSource(prop)))
+                element._PropagateInheritedValue(prop, DependencyObjectNative.UNDEFINED, DependencyObjectNative.UNDEFINED);
         }
 
 
