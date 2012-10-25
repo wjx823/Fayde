@@ -109,8 +109,10 @@
     <Compile Include="Documents\SpanNative.cs" />
     <Compile Include="Controls\TextBlockNative.cs" />
     <Compile Include="Documents\TextElementNative.cs" />
+    <Compile Include="SetterWrapper.cs" />
     <Compile Include="UIElementNative.cs" />
     <Compile Include="UndefinedObject.cs" />
+    <Compile Include="Walkers\DeepStyleWalker.cs" />
     <Compile Include="WeakPropertyChangedHandler.cs" />
   </ItemGroup>
   <ItemGroup>
