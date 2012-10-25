@@ -160,7 +160,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
         [ScriptableMember]
         public object ReadLocalValue(ScriptObject prop)
         {
-            return ReadLocalValue(new DependencyPropertyWrapper(prop));
+            return ReadLocalValue(DependencyPropertyWrapper.Lookup(prop));
         }
         private object ReadLocalValue(DependencyPropertyWrapper prop)
         {
@@ -174,7 +174,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
         [ScriptableMember]
         public void ClearValue(ScriptObject prop, bool notifyListeners)
         {
-            ClearValue(new DependencyPropertyWrapper(prop), notifyListeners);
+            ClearValue(DependencyPropertyWrapper.Lookup(prop), notifyListeners);
         }
         private void ClearValue(DependencyPropertyWrapper prop, bool notifyListeners)
         {
