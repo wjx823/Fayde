@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Browser;
 using WickedSick.Fayde.Client.NativeEngine.Providers;
+using WickedSick.Fayde.Client.NativeEngine.Walkers;
 
 namespace WickedSick.Fayde.Client.NativeEngine
 {
@@ -18,8 +19,12 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
         internal override IEnumerable<DependencyObjectNative> GetChildrenForInheritedPropagation()
         {
-            //VisualTreeWalker
-            return base.GetChildrenForInheritedPropagation();
+            var walker = new VisualTreeWalker(Object, VisualTreeWalker.VisualTreeWalkerDirection.Logical);
+            UIElementNative uie = null;
+            while ((uie = walker.Step()) != null)
+            {
+                yield return uie;
+            }
         }
     }
 }
