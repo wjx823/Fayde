@@ -25,6 +25,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
         protected List<PropertyValueProvider> _Providers = new List<PropertyValueProvider>();
 
         public static readonly UndefinedObject UNDEFINED = new UndefinedObject { ID = Guid.NewGuid() };
+        public static DependencyPropertyWrapper NameProperty;
 
         public DependencyObjectNative(ScriptObject @object)
         {
@@ -623,6 +624,36 @@ namespace WickedSick.Fayde.Client.NativeEngine
             if (dobn == null)
                 return;
             dobn.Object.Invoke("_UnregisterAllNamesRootedAt", namescope);
+        }
+
+        #endregion
+
+        #region Clone
+
+        [ScriptableMember]
+        public void CloneCore(ScriptObject source)
+        {
+            var sourceNative = GetFromObject(source);
+            AutoCreateProvider.ForeachValue((prop, value) => CloneAutoCreatedValue(prop, value, sourceNative, this));
+            LocalValueProvider.ForeachValue((prop, value) => CloneLocalValue(prop, value, this));
+        }
+
+        private void CloneAutoCreatedValue(DependencyPropertyWrapper prop, object value, DependencyObjectNative oldObject, DependencyObjectNative newObject)
+        {
+            var oldValue = oldObject.GetValue(prop, PropertyPrecedence.AutoCreate);
+            var newValue = newObject.GetValue(prop, PropertyPrecedence.AutoCreate);
+
+            var oldValueNative = GetFromObject(oldValue);
+            var newValueNative = GetFromObject(newValue);
+            if (oldValueNative != null && newValueNative != null)
+                newValueNative.Object.Invoke("CloneCore", oldValueNative.Object);
+        }
+
+        private void CloneLocalValue(DependencyPropertyWrapper prop, object value, DependencyObjectNative newObject)
+        {
+            if (prop._ID == NameProperty._ID)
+                return;
+            newObject.SetValue(prop, DependencyObjectInterop.Clone(value));
         }
 
         #endregion

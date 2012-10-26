@@ -119,12 +119,16 @@ DependencyObject.Instance.Clone = function () {
     return newDO;
 };
 DependencyObject.Instance.CloneCore = function (source) {
-    var data = {
-        Old: source,
-        New: this
-    };
-    source._Providers[_PropertyPrecedence.AutoCreate].ForeachValue(DependencyObject.CloneAutoCreatedValue, data);
-    source._Providers[_PropertyPrecedence.LocalValue].ForeachValue(DependencyObject.CloneLocalValue, data);
+    if (this._Native) {
+        this._Native.CloneCore(source);
+    } else {
+        var data = {
+            Old: source,
+            New: this
+        };
+        source._Providers[_PropertyPrecedence.AutoCreate].ForeachValue(DependencyObject.CloneAutoCreatedValue, data);
+        source._Providers[_PropertyPrecedence.LocalValue].ForeachValue(DependencyObject.CloneLocalValue, data);
+    }
     this._CloneAnimationStorage(source);
 };
 DependencyObject.CloneAutoCreatedValue = function (propd, value, data) {

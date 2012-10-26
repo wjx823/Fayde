@@ -7,6 +7,8 @@ namespace WickedSick.Fayde.Client.NativeEngine
 {
     public class DependencyObjectInterop
     {
+        private static ScriptObject _FaydeCtor;
+
         [ScriptableMember]
         public DependencyObjectNative CreateObjectNative(ScriptObject so)
         {
@@ -29,8 +31,9 @@ namespace WickedSick.Fayde.Client.NativeEngine
         }
 
         [ScriptableMember]
-        public void RegisterTypes(ScriptObject doCtor, ScriptObject dpCtor, ScriptObject uieCtor, ScriptObject feCtor, ScriptObject ctrlCtor, ScriptObject popupCtor, ScriptObject txtCtor, ScriptObject pwdCtor, ScriptObject tbCtor, ScriptObject spanCtor, ScriptObject parCtor, ScriptObject secCtor, ScriptObject setterCtor)
+        public void RegisterTypes(ScriptObject faydeCtor, ScriptObject doCtor, ScriptObject dpCtor, ScriptObject uieCtor, ScriptObject feCtor, ScriptObject ctrlCtor, ScriptObject popupCtor, ScriptObject txtCtor, ScriptObject pwdCtor, ScriptObject tbCtor, ScriptObject spanCtor, ScriptObject parCtor, ScriptObject secCtor, ScriptObject setterCtor)
         {
+            _FaydeCtor = faydeCtor;
             DependencyPropertyWrapper.JsCtor = dpCtor;
             JsCtors.Register<DependencyObjectNative>(doCtor);
             JsCtors.Register<UIElementNative>(uieCtor);
@@ -44,6 +47,10 @@ namespace WickedSick.Fayde.Client.NativeEngine
             JsCtors.Register<ParagraphNative>(parCtor);
             JsCtors.Register<SectionNative>(secCtor);
             JsCtors.Register<SetterNative>(setterCtor);
+
+            var nmp = doCtor.GetProperty("NameProperty") as ScriptObject;
+            if (nmp != null)
+                DependencyObjectNative.NameProperty = DependencyPropertyWrapper.Lookup(nmp);
 
             var dcp = feCtor.GetProperty("DataContextProperty") as ScriptObject;
             if (dcp != null)
@@ -85,6 +92,11 @@ namespace WickedSick.Fayde.Client.NativeEngine
             var cvp = setterCtor.GetProperty("ConvertedValueProperty") as ScriptObject;
             if (cvp != null)
                 SetterNative.ConvertedValueProperty = DependencyPropertyWrapper.Lookup(cvp);
+        }
+
+        internal static object Clone(object value)
+        {
+            return _FaydeCtor.Invoke("Clone", value);
         }
     }
 }
