@@ -111,6 +111,8 @@
     <Compile Include="Documents\SpanNative.cs" />
     <Compile Include="Controls\TextBlockNative.cs" />
     <Compile Include="Documents\TextElementNative.cs" />
+    <Compile Include="Providers\TextBlockDynamicPropertyValueProvider.cs" />
+    <Compile Include="Providers\TextBoxBaseDynamicPropertyValueProvider.cs" />
     <Compile Include="SetterNative.cs" />
     <Compile Include="UIElementNative.cs" />
     <Compile Include="UndefinedObject.cs" />

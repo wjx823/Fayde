@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Browser;
+using WickedSick.Fayde.Client.NativeEngine.Providers;
 
 namespace WickedSick.Fayde.Client.NativeEngine.Controls
 {
@@ -10,6 +11,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Controls
         public TextBlockNative(ScriptObject @object)
             : base(@object)
         {
+            _Providers[PropertyPrecedence.DynamicValue] = new TextBlockDynamicPropertyValueProvider(this);
         }
 
         internal override IEnumerable<DependencyObjectNative> GetChildrenForInheritedPropagation()

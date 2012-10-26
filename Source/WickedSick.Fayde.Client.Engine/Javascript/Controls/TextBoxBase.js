@@ -941,7 +941,7 @@ TextBoxBase.Instance.OnGotFocus = function (e) {
 
 TextBoxBase.Instance._InitSelectionBrushes = function () {
     if (this._Native)
-        this._Native.InitializeSelectionBrushes();
+        this._Native.InitializeSelectionBrushes(new SolidColorBrush(Color.FromHex("#FF444444")), new SolidColorBrush(Color.FromHex("#FFFFFFFF")));
     else
         this._Providers[_PropertyPrecedence.DynamicValue]._InitializeSelectionBrushes();
 };

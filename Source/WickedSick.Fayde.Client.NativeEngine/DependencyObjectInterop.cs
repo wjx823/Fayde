@@ -70,6 +70,9 @@ namespace WickedSick.Fayde.Client.NativeEngine
             if (cp != null)
                 PopupNative.ChildProperty = DependencyPropertyWrapper.Lookup(cp);
 
+            TextBoxNative.InitializeProperties(txtCtor);
+            PasswordBoxNative.InitializeProperties(pwdCtor);
+
             var inp = tbCtor.GetProperty("InlinesProperty") as ScriptObject;
             if (inp != null)
                 TextBlockNative.InlinesProperty = DependencyPropertyWrapper.Lookup(inp);
