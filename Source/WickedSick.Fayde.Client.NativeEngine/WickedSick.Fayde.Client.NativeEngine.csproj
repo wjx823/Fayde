@@ -75,6 +75,8 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ControlNative.cs" />
+    <Compile Include="Controls\PasswordBoxNative.cs" />
+    <Compile Include="Controls\TextBoxNative.cs" />
     <Compile Include="DependencyObjectNative.cs" />
     <Compile Include="DependencyObjectInterop.cs" />
     <Compile Include="DependencyPropertyWrapper.cs" />

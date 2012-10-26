@@ -41,7 +41,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
                 _AttachListener(_Source);
             }
 
-            if (_Object._IsAttached)
+            if (_Object.GetIsAttached())
                 LocalValueChanged(IsEnabledProperty);
         }
 

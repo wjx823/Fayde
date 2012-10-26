@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Browser;
+﻿using System.Collections.Generic;
 
 namespace WickedSick.Fayde.Client.NativeEngine.Providers
 {

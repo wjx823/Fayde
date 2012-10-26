@@ -12,10 +12,18 @@ namespace WickedSick.Fayde.Client.NativeEngine.Controls
             _Providers[PropertyPrecedence.IsEnabled] = new InheritedIsEnabledPropertyValueProvider(this);
         }
 
+        protected InheritedIsEnabledPropertyValueProvider InheritedIsEnabledProvider { get { return _Providers[PropertyPrecedence.IsEnabled] as InheritedIsEnabledPropertyValueProvider; } }
+
         internal static ControlNative FindAncestorControl(ScriptObject source)
         {
             var ctor = JsCtors.GetCtor<ControlNative>();
             return DependencyObjectNative.GetFromObject(ctor.Invoke("_FindAncestorControl", source)) as ControlNative;
+        }
+
+        [ScriptableMember]
+        public void SetDataSource(ScriptObject dataSource)
+        {
+            InheritedIsEnabledProvider.SetDataSource(dataSource);
         }
     }
 }

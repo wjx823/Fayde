@@ -34,7 +34,7 @@ Span.Instance._SerializeText = function () {
 Span.Instance._OnCollectionChanged = function (sender, args) {
     if (this._PropertyHasValueNoAutoCreate(Span.InlinesProperty, sender)) {
         if (args.Action === CollectionChangedArgs.Action.Add)
-            this._Providers[_PropertyPrecedence.Inherited].PropagateInheritedPropertiesOnAddingToTree(args.NewValue);
+            this._PropagateOnAdd(args.NewValue);
         this._NotifyLayoutContainerOnCollectionChanged(sender, args);
     } else {
         this._OnCollectionChanged$Inline(sender, args);

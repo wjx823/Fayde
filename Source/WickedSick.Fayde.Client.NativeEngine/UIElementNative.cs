@@ -26,5 +26,17 @@ namespace WickedSick.Fayde.Client.NativeEngine
                 yield return uie;
             }
         }
+
+        [ScriptableMember]
+        public void PropagateOnAdd(ScriptObject item)
+        {
+            InheritedProvider.PropagateInheritedPropertiesOnAddingToTree(DependencyObjectNative.GetFromScriptObject(item));
+        }
+
+        [ScriptableMember]
+        public void PropagateOnRemove(ScriptObject item)
+        {
+            InheritedProvider.ClearInheritedPropertiesOnRemovingFromTree(DependencyObjectNative.GetFromScriptObject(item));
+        }
     }
 }

@@ -207,7 +207,7 @@ _TextBoxView.Instance.GetCursorFromXY = function (x, y) {
 
 _TextBoxView.Instance._Render = function (ctx, region) {
     var renderSize = this._RenderSize;
-    this._TextBox._Providers[_PropertyPrecedence.DynamicValue]._InitializeSelectionBrushes();
+    this._TextBox._InitSelectionBrushes();
 
     this._UpdateCursor(false);
 

@@ -914,7 +914,7 @@ UIElement.Instance._ElementRemoved = function (item) {
 
     this._InvalidateMeasure();
 
-    this._Providers[_PropertyPrecedence.Inherited].ClearInheritedPropertiesOnRemovingFromTree(item);
+    this._PropagateOnRemove(item);
 }
 UIElement.Instance._ElementAdded = function (item) {
     item.SetVisualParent(this);
@@ -922,7 +922,7 @@ UIElement.Instance._ElementAdded = function (item) {
     item._UpdateTotalHitTestVisibility();
     item._Invalidate();
 
-    this._Providers[_PropertyPrecedence.Inherited].PropagateInheritedPropertiesOnAddingToTree(item);
+    this._PropagateOnAdd(item);
     item._SetIsAttached(this._IsAttached);
     item._SetIsLoaded(this._IsLoaded);
     var o = this;

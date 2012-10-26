@@ -29,7 +29,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
         }
 
         [ScriptableMember]
-        public void RegisterTypes(ScriptObject doCtor, ScriptObject dpCtor, ScriptObject uieCtor, ScriptObject feCtor, ScriptObject ctrlCtor, ScriptObject popupCtor, ScriptObject tbCtor, ScriptObject spanCtor, ScriptObject parCtor, ScriptObject secCtor, ScriptObject setterCtor)
+        public void RegisterTypes(ScriptObject doCtor, ScriptObject dpCtor, ScriptObject uieCtor, ScriptObject feCtor, ScriptObject ctrlCtor, ScriptObject popupCtor, ScriptObject txtCtor, ScriptObject pwdCtor, ScriptObject tbCtor, ScriptObject spanCtor, ScriptObject parCtor, ScriptObject secCtor, ScriptObject setterCtor)
         {
             DependencyPropertyWrapper.JsCtor = dpCtor;
             JsCtors.Register<DependencyObjectNative>(doCtor);
@@ -37,6 +37,8 @@ namespace WickedSick.Fayde.Client.NativeEngine
             JsCtors.Register<FrameworkElementNative>(feCtor);
             JsCtors.Register<ControlNative>(ctrlCtor);
             JsCtors.Register<PopupNative>(popupCtor);
+            JsCtors.Register<TextBoxNative>(txtCtor);
+            JsCtors.Register<PasswordBoxNative>(pwdCtor);
             JsCtors.Register<TextBlockNative>(tbCtor);
             JsCtors.Register<SpanNative>(spanCtor);
             JsCtors.Register<ParagraphNative>(parCtor);

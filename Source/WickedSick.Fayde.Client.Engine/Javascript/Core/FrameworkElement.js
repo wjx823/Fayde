@@ -720,39 +720,6 @@ FrameworkElement.Instance._UpdateLayer = function (pass, error) {
     }
 };
 
-//#region Implicit Styles
-
-FrameworkElement.Instance._SetImplicitStyles = function (styleMask, styles) {
-    var app = App.Instance;
-    if (!app)
-        return;
-
-    if (!styles)
-        styles = app._GetImplicitStyles(this, styleMask);
-
-    var error = new BError();
-
-    if (styles) {
-        for (var i = 0; i < _StyleIndex.Count; i++) {
-            var style = styles[i];
-            if (!style)
-                continue;
-            if (!Validators.StyleValidator(this, FrameworkElement.StyleProperty, style, error)) {
-                Warn("Style validation failed. [" + error.Message + "]");
-                return;
-            }
-        }
-    }
-
-    this._Providers[_PropertyPrecedence.ImplicitStyle].SetStyles(styleMask, styles, error);
-};
-FrameworkElement.Instance._ClearImplicitStyles = function (styleMask) {
-    var error = new BError();
-    this._Providers[_PropertyPrecedence.ImplicitStyle].ClearStyles(styleMask, error);
-};
-
-//#endregion
-
 //#region Template
 
 FrameworkElement.Instance.OnApplyTemplate = function () { };
@@ -822,7 +789,7 @@ FrameworkElement.Instance._OnPropertyChanged = function (args, error) {
     } else if (args.Property._ID === FrameworkElement.StyleProperty._ID) {
         var newStyle = args.NewValue;
         if (!error.IsErrored())
-            this._Providers[_PropertyPrecedence.LocalStyle]._UpdateStyle(newStyle, error);
+            this._UpdateLocalStyle(newStyle, error);
         if (error.IsErrored())
             return;
     } else if (args.Property._ID === FrameworkElement.HorizontalAlignmentProperty._ID
@@ -849,8 +816,7 @@ FrameworkElement.Instance._OnIsLoadedChanged = function (loaded) {
     if (loaded)
         this.InvokeLoaded();
 
-    if (this._Providers[_PropertyPrecedence.InheritedDataContext])
-        this._Providers[_PropertyPrecedence.InheritedDataContext].EmitChanged();
+    this._EmitDataContextChanged();
 };
 
 //#endregion
@@ -862,9 +828,9 @@ FrameworkElement.Instance.SetVisualParent = function (value) {
     this.SetVisualParent$UIElement(value);
 
     if (!this._LogicalParent && (!this._VisualParent || this._VisualParent instanceof FrameworkElement)) {
-        this._Providers[_PropertyPrecedence.InheritedDataContext].SetDataSource(this._VisualParent);
+        this._SetDataContextDataSource(this._VisualParent);
         if (this._IsLoaded)
-            this._Providers[_PropertyPrecedence.InheritedDataContext].EmitChanged();
+            this._EmitDataContextChanged();
     }
 };
 FrameworkElement.Instance._SetLogicalParent = function (value, error) {
@@ -893,13 +859,13 @@ FrameworkElement.Instance._OnLogicalParentChanged = function (oldParent, newPare
     } else {
         var visualParent;
         if (newParent && newParent instanceof FrameworkElement)
-            this._Providers[_PropertyPrecedence.InheritedDataContext].SetDataSource(newParent);
+            this._SetDataContextDataSource(newParent);
         else if ((visualParent = this.GetVisualParent()) && visualParent instanceof FrameworkElement)
-            this._Providers[_PropertyPrecedence.InheritedDataContext].SetDataSource(visualParent);
+            this._SetDataContextDataSource(visualParent);
         else
-            this._Providers[_PropertyPrecedence.InheritedDataContext].SetDataSource(null);
+            this._SetDataContextDataSource(null);
         if (this._IsLoaded)
-            this._Providers[_PropertyPrecedence.InheritedDataContext].EmitChanged();
+            this._EmitDataContextChanged();
     }
 };
 
@@ -913,6 +879,64 @@ FrameworkElement.Instance._HasFocus = function () {
             return true;
     }
     return false;
+};
+
+//#endregion
+
+//#region Interop
+
+FrameworkElement.Instance._ClearImplicitStyles = function (styleMask) {
+    if (this._Native) {
+        this._Native.ClearImplicitStyles(styleMask);
+    } else {
+        var error = new BError();
+        this._Providers[_PropertyPrecedence.ImplicitStyle].ClearStyles(styleMask, error);
+    }
+};
+FrameworkElement.Instance._SetImplicitStyles = function (styleMask, styles) {
+    var app = App.Instance;
+    if (!app)
+        return;
+
+    if (!styles)
+        styles = app._GetImplicitStyles(this, styleMask);
+
+    var error = new BError();
+    if (styles) {
+        for (var i = 0; i < _StyleIndex.Count; i++) {
+            var style = styles[i];
+            if (!style)
+                continue;
+            if (!Validators.StyleValidator(this, FrameworkElement.StyleProperty, style, error)) {
+                Warn("Style validation failed. [" + error.Message + "]");
+                return;
+            }
+        }
+    }
+
+    if (this._Native)
+        this._Native.SetImplicitStyles(styleMask, styles);
+    else
+        this._Providers[_PropertyPrecedence.ImplicitStyle].SetStyles(styleMask, styles, error);
+};
+FrameworkElement.Instance._UpdateLocalStyle = function (newStyle, error) {
+    if (this._Native)
+        this._Native.UpdateLocalStyle(newStyle);
+    else
+        this._Providers[_PropertyPrecedence.LocalStyle]._UpdateStyle(newStyle, error);
+};
+FrameworkElement.Instance._SetDataContextDataSource = function (dataSource) {
+    if (this._Native)
+        this._Native._SetDataContextDataSource(dataSource);
+    else
+        this._Providers[_PropertyPrecedence.InheritedDataContext].SetDataSource(dataSource);
+};
+FrameworkElement.Instance._EmitDataContextChanged = function () {
+    var provider;
+    if (this._Native)
+        this._Native.EmitDataContextChanged();
+    else if ((provider = this._Providers[_PropertyPrecedence.InheritedDataContext]))
+        provider.EmitChanged();
 };
 
 //#endregion

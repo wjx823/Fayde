@@ -84,7 +84,7 @@ Control.Instance.GetTemplateChild = function (name) {
 Control.Instance.SetVisualParent = function (visualParent) {
     if (this.GetVisualParent() != visualParent) {
         this.SetVisualParent$FrameworkElement(visualParent);
-        this._Providers[_PropertyPrecedence.IsEnabled].SetDataSource(this._GetLogicalParent());
+        this._SetDataSource(this._GetLogicalParent());
     }
 };
 
@@ -123,7 +123,7 @@ Control.Instance._HitTestPoint = function (ctx, p, uielist) {
 };
 
 Control.Instance._UpdateIsEnabledSource = function (control) {
-    this._Providers[_PropertyPrecedence.IsEnabled].SetDataSource(control);
+    this._SetDataSource(control);
 };
 
 Control.Instance._OnPropertyChanged = function (args, error) {
@@ -154,13 +154,20 @@ Control.Instance._OnPropertyChanged = function (args, error) {
 };
 Control.Instance._OnLogicalParentChanged = function (oldParent, newParent) {
     this._OnLogicalParentChanged$FrameworkElement(oldParent, newParent);
-    this._Providers[_PropertyPrecedence.IsEnabled].SetDataSource(newParent);
+    this._SetDataSource(newParent);
 };
 Control.Instance._OnIsAttachedChanged = function (value) {
     this._OnIsAttachedChanged$FrameworkElement(value);
-    this._Providers[_PropertyPrecedence.IsEnabled].SetDataSource(this._GetLogicalParent());
+    this._SetDataSource(this._GetLogicalParent());
     if (!value)
         VisualStateManager.DestroyStoryboards(this);
+};
+
+Control.Instance._SetDataSource = function (dataSource) {
+    if (this._Native)
+        this._Native.SetDataSource(dataSource);
+    else
+        this._Providers[_PropertyPrecedence.IsEnabled].SetDataSource(dataSource);
 };
 
 Control.Instance._DoApplyTemplateWithError = function (error) {

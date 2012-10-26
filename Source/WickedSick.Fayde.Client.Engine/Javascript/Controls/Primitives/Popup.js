@@ -73,7 +73,7 @@ Popup.Instance._OnPropertyChanged = function (args, error) {
             if (this.IsOpen)
                 this._Hide(oldFE);
 
-            this._Providers[_PropertyPrecedence.Inherited].ClearInheritedPropertiesOnRemovingFromTree(oldFE);
+            this._PropagateOnRemove(oldFE);
 
             oldFE._SetLogicalParent(undefined, error);
             if (error.IsErrored())
@@ -85,7 +85,7 @@ Popup.Instance._OnPropertyChanged = function (args, error) {
             if (error.IsErrored())
                 return;
 
-            this._Providers[_PropertyPrecedence.Inherited].PropagateInheritedPropertiesOnAddingToTree(newFE);
+            this._PropagateOnAdd(newFE);
 
             if (this.IsOpen)
                 this._Show(newFE);

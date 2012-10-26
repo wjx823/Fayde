@@ -38,14 +38,14 @@ DependencyObject.Instance.Init = function () {
 
 DependencyObject.NameProperty = DependencyProperty.RegisterFull("Name", function () { return String; }, DependencyObject, "", undefined, undefined, undefined, false, DependencyObject._NameValidator);
 
-//#endregion
-
-//#region Properties
-
 Nullstone.AutoProperties(DependencyObject, [
     DependencyObject.NameProperty,
     "TemplateOwner"
 ]);
+
+//#endregion
+
+//#region Mentor
 
 DependencyObject.Instance.GetMentor = function () {
     ///<returns type="DependencyObject"></returns>
@@ -60,13 +60,17 @@ DependencyObject.Instance.SetMentor = function (value) {
 };
 DependencyObject.Instance._OnMentorChanged = function (oldValue, newValue) {
     if (!(this instanceof FrameworkElement)) {
-        var propPrecEnum = _PropertyPrecedence;
-        this._Providers[propPrecEnum.AutoCreate].ForeachValue(DependencyObject._PropagateMentor, newValue);
-        this._Providers[propPrecEnum.LocalValue].ForeachValue(DependencyObject._PropagateMentor, newValue);
-        if (this._Providers[propPrecEnum.LocalStyle])
-            this._Providers[propPrecEnum.LocalStyle].ForeachValue(DependencyObject._PropagateMentor, newValue);
-        if (this._Providers[propPrecEnum.ImplicitStyle])
-            this._Providers[propPrecEnum.ImplicitStyle].ForeachValue(DependencyObject._PropagateMentor, newValue);
+        if (this._Native) {
+            this._Native.ChangeMentors(oldValue, newValue);
+        } else {
+            var propPrecEnum = _PropertyPrecedence;
+            this._Providers[propPrecEnum.AutoCreate].ForeachValue(DependencyObject._PropagateMentor, newValue);
+            this._Providers[propPrecEnum.LocalValue].ForeachValue(DependencyObject._PropagateMentor, newValue);
+            if (this._Providers[propPrecEnum.LocalStyle])
+                this._Providers[propPrecEnum.LocalStyle].ForeachValue(DependencyObject._PropagateMentor, newValue);
+            if (this._Providers[propPrecEnum.ImplicitStyle])
+                this._Providers[propPrecEnum.ImplicitStyle].ForeachValue(DependencyObject._PropagateMentor, newValue);
+        }
     }
     if (this._MentorChangedCallback) {
         this._MentorChangedCallback(this, newValue);
@@ -78,6 +82,10 @@ DependencyObject._PropagateMentor = function (propd, value, newMentor) {
     }
 };
 
+//#endregion
+
+//#region IsAttached
+
 DependencyObject.Instance._SetIsAttached = function (value) {
     if (this._IsAttached === value)
         return;
@@ -85,8 +93,12 @@ DependencyObject.Instance._SetIsAttached = function (value) {
     this._OnIsAttachedChanged(value);
 };
 DependencyObject.Instance._OnIsAttachedChanged = function (value) {
-    this._Providers[_PropertyPrecedence.LocalValue].ForeachValue(DependencyObject._PropagateIsAttached, value);
-    this._Providers[_PropertyPrecedence.AutoCreate].ForeachValue(DependencyObject._PropagateIsAttached, value);
+    if (this._Native) {
+        this._Native._OnIsAttachedChanged(value);
+    } else {
+        this._Providers[_PropertyPrecedence.LocalValue].ForeachValue(DependencyObject._PropagateIsAttached, value);
+        this._Providers[_PropertyPrecedence.AutoCreate].ForeachValue(DependencyObject._PropagateIsAttached, value);
+    }
 };
 DependencyObject._PropagateIsAttached = function (propd, value, newIsAttached) {
     if (propd._IsCustom)
@@ -357,6 +369,9 @@ DependencyObject.Instance._GetValue = function (propd, startingPrecedence, endin
     return undefined;
 };
 DependencyObject.Instance._GetValueNoAutoCreate = function (propd) {
+    if (this._Native)
+        return this._Native.GetValueNoAutoCreate(propd);
+
     var propPrecEnum = _PropertyPrecedence;
     var v = this._GetValue(propd, propPrecEnum.LocalValue, propPrecEnum.InheritedDataContext);
     if (v === undefined && propd._IsAutoCreated)
@@ -364,6 +379,9 @@ DependencyObject.Instance._GetValueNoAutoCreate = function (propd) {
     return v;
 };
 DependencyObject.Instance._GetValueNoDefault = function (propd) {
+    if (this._Native)
+        this._Native.GetValueNoDefault(propd);
+
     var value;
     var propPrecDefaultValue = _PropertyPrecedence.DefaultValue;
     for (var i = 0; i < propPrecDefaultValue; i++) {
@@ -585,10 +603,7 @@ DependencyObject.Instance._ProviderValueChanged = function (providerPrecedence, 
             oldDO._RemoveTarget(this);
 
             oldDO.RemovePropertyChangedListener(this, propd);
-            if (oldDO instanceof Collection) {
-                oldDO.Changed.Unsubscribe(this._OnCollectionChangedEH, this);
-                oldDO.ItemChanged.Unsubscribe(this._OnCollectionItemChangedEH, this);
-            }
+            this.RemoveCollectionListeners(oldDO);
         } else {
             oldDO.SetMentor(null);
         }
@@ -603,10 +618,7 @@ DependencyObject.Instance._ProviderValueChanged = function (providerPrecedence, 
 
             newDO._SetResourceBase(this._GetResourceBase());
 
-            if (newDO instanceof Collection) {
-                newDO.Changed.Subscribe(this._OnCollectionChangedEH, this);
-                newDO.ItemChanged.Subscribe(this._OnCollectionItemChangedEH, this);
-            }
+            this.AddCollectionListeners(newDO);
             newDO.AddPropertyChangedListener(this, propd);
             newDO._AddTarget(this);
         } else {
@@ -765,6 +777,19 @@ DependencyObject.Instance._OnSubPropertyChanged = function (propd, sender, args)
 
 //#region Collection Change
 
+DependencyObject.Instance.AddCollectionListeners = function (obj) {
+    if (!(obj instanceof Collection))
+        return;
+    obj.Changed.Subscribe(this._OnCollectionChangedEH, this);
+    obj.ItemChanged.Subscribe(this._OnCollectionItemChangedEH, this);
+};
+DependencyObject.Instance.RemoveCollectionListeners = function (obj) {
+    if (!(obj instanceof Collection))
+        return;
+    obj.Changed.Unsubscribe(this._OnCollectionChangedEH, this);
+    obj.ItemChanged.Unsubscribe(this._OnCollectionItemChangedEH, this);
+};
+
 DependencyObject.Instance._OnCollectionChangedEH = function (sender, args) {
     this._OnCollectionChanged(sender, args);
 };
@@ -862,12 +887,16 @@ DependencyObject.Instance._RegisterAllNamesRootedAt = function (toNs, error) {
     }
 
     if (recurse) {
-        var data = {
-            toNs: toNs,
-            error: error
-        };
-        this._Providers[_PropertyPrecedence.AutoCreate].ForeachValue(DependencyObject._RegisterDONames, data);
-        this._Providers[_PropertyPrecedence.LocalValue].ForeachValue(DependencyObject._RegisterDONames, data);
+        if (this._Native) {
+            this._Native.RegisterNames(toNs, error);
+        } else {
+            var data = {
+                toNs: toNs,
+                error: error
+            };
+            this._Providers[_PropertyPrecedence.AutoCreate].ForeachValue(DependencyObject._RegisterDONames, data);
+            this._Providers[_PropertyPrecedence.LocalValue].ForeachValue(DependencyObject._RegisterDONames, data);
+        }
     }
 
     this._RegisteringNames = false;
@@ -891,8 +920,12 @@ DependencyObject.Instance._UnregisterAllNamesRootedAt = function (fromNs) {
         return;
     }
 
-    this._Providers[_PropertyPrecedence.AutoCreate].ForeachValue(DependencyObject._UnregisterDONames, fromNs);
-    this._Providers[_PropertyPrecedence.LocalValue].ForeachValue(DependencyObject._UnregisterDONames, fromNs);
+    if (this._Native) {
+        this._Native.UnregisterNames(fromNs);
+    } else {
+        this._Providers[_PropertyPrecedence.AutoCreate].ForeachValue(DependencyObject._UnregisterDONames, fromNs);
+        this._Providers[_PropertyPrecedence.LocalValue].ForeachValue(DependencyObject._UnregisterDONames, fromNs);
+    }
 
     this._RegisteringNames = false;
 }
@@ -1124,6 +1157,25 @@ DependencyObject.Instance._DetachAnimationStorage = function (propd, storage) {
             node = node.Next;
         }
     }
+};
+
+//#endregion
+
+//#region Interop
+
+DependencyObject.Instance._PropagateOnAdd = function (item) {
+    var provider;
+    if (this._Native)
+        this._Native.PropagateOnAdd(item);
+    else if ((provider = this._Providers[_PropertyPrecedence.Inherited]))
+        provider.PropagateInheritedPropertiesOnAddingToTree(item);
+};
+DependencyObject.Instance._PropagateOnRemove = function (item) {
+    var provider;
+    if (this._Native)
+        this._Native.PropagateOnRemove(item);
+    else if ((provider = this._Providers[_PropertyPrecedence.Inherited]))
+        provider.ClearInheritedPropertiesOnRemovingFromTree(item);
 };
 
 //#endregion

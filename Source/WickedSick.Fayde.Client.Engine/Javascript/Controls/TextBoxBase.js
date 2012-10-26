@@ -937,5 +937,16 @@ TextBoxBase.Instance.OnGotFocus = function (e) {
 
 //#endregion
 
+//#region Interop
+
+TextBoxBase.Instance._InitSelectionBrushes = function () {
+    if (this._Native)
+        this._Native.InitializeSelectionBrushes();
+    else
+        this._Providers[_PropertyPrecedence.DynamicValue]._InitializeSelectionBrushes();
+};
+
+//#endregion
+
 Nullstone.FinishCreate(TextBoxBase);
 //#endregion

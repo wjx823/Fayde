@@ -267,7 +267,7 @@ TextBlock.Instance._SetTextInternal = function (text) {
             inlines.Add(run);
         }
         run.Text = text;
-        this._Providers[_PropertyPrecedence.Inherited].PropagateInheritedPropertiesOnAddingToTree(run);
+        this._PropagateOnAdd(run);
     } else {
         inlines.Clear();
         this.Text = "";
@@ -366,7 +366,7 @@ TextBlock.Instance._OnCollectionChanged = function (sender, args) {
         return;
 
     if (args.Action === CollectionChangedArgs.Add)
-        this._Providers[_PropertyPrecedence.Inherited].PropagateInheritedPropertiesOnAddingToTree(args.NewValue);
+        this._PropagateOnAdd(args.NewValue);
 
     this._SetsValue = false;
     this._SetValue(TextBlock.TextProperty, this._GetTextInternal(inlines));

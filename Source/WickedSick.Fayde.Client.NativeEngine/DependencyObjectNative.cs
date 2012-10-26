@@ -50,10 +50,12 @@ namespace WickedSick.Fayde.Client.NativeEngine
         
         public object _ResourceBase { get; set; }
 
+        #endregion
+
+        #region Providers
+
         protected LocalValuePropertyValueProvider LocalValueProvider { get { return _Providers[PropertyPrecedence.LocalValue] as LocalValuePropertyValueProvider; } }
         protected AutoCreatePropertyValueProvider AutoCreateProvider { get { return _Providers[PropertyPrecedence.AutoCreate] as AutoCreatePropertyValueProvider; } }
-        protected StylePropertyValueProvider LocalStyleProvider { get { return _Providers[PropertyPrecedence.LocalStyle] as StylePropertyValueProvider; } }
-        protected ImplicitStylePropertyValueProvider ImplicitStyleProvider { get { return _Providers[PropertyPrecedence.ImplicitStyle] as ImplicitStylePropertyValueProvider; } }
         protected InheritedPropertyValueProvider InheritedProvider { get { return _Providers[PropertyPrecedence.Inherited] as InheritedPropertyValueProvider; } }
 
         #endregion
@@ -82,12 +84,37 @@ namespace WickedSick.Fayde.Client.NativeEngine
             }
             return DependencyObjectNative.UNDEFINED;
         }
+
+        [ScriptableMember]
+        public object GetValueNoAutoCreate(ScriptObject prop)
+        {
+            return GetValueNoAutoCreate(DependencyPropertyWrapper.Lookup(prop));
+        }
         internal object GetValueNoAutoCreate(DependencyPropertyWrapper prop)
         {
             var v = GetValue(prop, PropertyPrecedence.LocalValue, PropertyPrecedence.InheritedDataContext);
             if (v == DependencyObjectNative.UNDEFINED && prop._IsAutoCreated)
                 v = AutoCreateProvider.ReadLocalValue(prop);
             return v;
+        }
+
+        [ScriptableMember]
+        public object GetValueNoDefault(ScriptObject prop)
+        {
+            return GetValueNoDefault(DependencyPropertyWrapper.Lookup(prop));
+        }
+        internal object GetValueNoDefault(DependencyPropertyWrapper prop)
+        {
+            for (int i = 0; i < PropertyPrecedence.DefaultValue; i++)
+			{
+                var provider = _Providers[i];
+                if (provider == null)
+                    continue;
+                var value = provider.GetPropertyValue(prop);
+                if (value != UNDEFINED)
+                    return value;
+			}
+            return UNDEFINED;
         }
 
         #endregion
@@ -196,7 +223,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
                         var dobn = GetFromScriptObject(dob);
                         dobn.CallRemoveParent(this);
                         dobn.CallRemovePropertyChangedListener(Object, prop);
-                        dobn._IsAttached = false;
+                        dobn.SetIsAttached(false);
                         if (Nullstone.Is(dob, JsTypeNames.Collection))
                         {
                             //TODO: Changed Event - Remove Handler
@@ -222,6 +249,21 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
         #endregion
 
+        internal int GetPropertyValueProvider(DependencyPropertyWrapper prop)
+        {
+            var bitmask = _ProviderBitmasks[prop];
+            for (int i = 0; i < PropertyPrecedence.Lowest; i++)
+            {
+                var p = 1 << i;
+                if ((bitmask & p) == p)
+                    return i;
+                if (i == PropertyPrecedence.DefaultValue && prop._HasDefaultValue)
+                    return i;
+                if (i == PropertyPrecedence.AutoCreate && prop._IsAutoCreated)
+                    return i;
+            }
+            return -1;
+        }
         internal void _ProviderValueChanged(int precedence, DependencyPropertyWrapper prop, object oldProviderValue, object newProviderValue, bool notifyListeners, bool setParent, bool mergeNamesOnSetParent)
         {
             var bitmask = GetProviderBitmask(prop);
@@ -300,42 +342,32 @@ namespace WickedSick.Fayde.Client.NativeEngine
             {
                 if (setsParent)
                 {
-                    oldDON._IsAttached = false;
+                    oldDON.SetIsAttached(false);
                     oldDON.CallRemoveParent(this);
                     oldDON.CallRemoveTarget(this);
 
                     oldDON.CallRemovePropertyChangedListener(Object, prop);
-                    if (Nullstone.Is(oldDON.Object, JsTypeNames.Collection))
-                    {
-                        //TODO: 
-                        //  Unsubscribe Collection Changed Event handler
-                        //  Unsubscribe Collection Item Changed Event handler
-                    }
+                    CallRemoveCollectionListeners(oldDON);
                 }
                 else
                 {
-                    oldDON.Mentor = null;
+                    oldDON.SetMentor(null);
                 }
             }
             if (newDON != null)
             {
                 if (setsParent)
                 {
-                    newDON._IsAttached = this._IsAttached;
+                    newDON.SetIsAttached(this.GetIsAttached());
                     newDON.CallAddParent(this, mergeNamesOnSetParent);
 
                     newDON._ResourceBase = _ResourceBase;
-                    if (Nullstone.Is(newDON.Object, JsTypeNames.Collection))
-                    {
-                        //TODO: 
-                        //  Subscribe Collection Changed Event handler
-                        //  Subscribe Collection Item Changed Event handler
-                    }
+                    CallAddCollectionListeners(newDON);
                     oldDON.CallAddPropertyChangedListener(Object, prop);
                 }
                 else
                 {
-                    //TODO: Recurse up mentors until finding a FrameworkElement, Set as mentor
+                    newDON.SetMentor(FindAncestorMentor());
                 }
             }
 
@@ -357,7 +389,6 @@ namespace WickedSick.Fayde.Client.NativeEngine
                 }
             }
         }
-
         private void _CallRecomputePropertyValueForProviders(DependencyPropertyWrapper prop, int precedence)
         {
             for (int i = 0; i < precedence; i++)
@@ -402,23 +433,6 @@ namespace WickedSick.Fayde.Client.NativeEngine
             }
             InheritedProvider.SetPropertySource(inheritable, source);
         }
-
-        internal int GetPropertyValueProvider(DependencyPropertyWrapper prop)
-        {
-            var bitmask = _ProviderBitmasks[prop];
-            for (int i = 0; i < PropertyPrecedence.Lowest; i++)
-            {
-                var p = 1 << i;
-                if ((bitmask & p) == p)
-                    return i;
-                if (i == PropertyPrecedence.DefaultValue && prop._HasDefaultValue)
-                    return i;
-                if (i == PropertyPrecedence.AutoCreate && prop._IsAutoCreated)
-                    return i;
-            }
-            return -1;
-        }
-
         internal virtual IEnumerable<DependencyObjectNative> GetChildrenForInheritedPropagation()
         {
             return Enumerable.Empty<DependencyObjectNative>();
@@ -440,6 +454,14 @@ namespace WickedSick.Fayde.Client.NativeEngine
         private void CallRemovePropertyChangedListener(ScriptObject so, DependencyPropertyWrapper prop)
         {
             Object.InvokeSelf("RemovePropertyChangedListener", so, prop.Object);
+        }
+        private void CallAddCollectionListeners(DependencyObjectNative don)
+        {
+            Object.Invoke("AddCollectionListeners", don.Object);
+        }
+        private void CallRemoveCollectionListeners(DependencyObjectNative don)
+        {
+            Object.Invoke("RemoveCollectionListeners", don.Object);
         }
 
         private List<WeakPropertyChangedHandler> _PropertyChangedListeners = new List<WeakPropertyChangedHandler>();
@@ -476,37 +498,30 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
         #region IsAttached
 
-        private bool __IsAttached;
-        public bool _IsAttached
-        {
-            get { return __IsAttached; }
-            set
-            {
-                if (__IsAttached == value)
-                    return;
-                __IsAttached = value;
-                _OnAttachedChanged(value);
-            }
-        }
-        private void _OnAttachedChanged(bool isAttached)
+        [ScriptableMember]
+        public void _OnAttachedChanged(bool isAttached)
         {
             LocalValueProvider.ForeachValue((p, v) => _PropagateIsAttached(p, v, isAttached));
             AutoCreateProvider.ForeachValue((p, v) => _PropagateIsAttached(p, v, isAttached));
+        }
+
+        internal bool GetIsAttached()
+        {
+            var val = Object.GetProperty("_IsAttached");
+            return val != null && val is bool && (bool)val;
+        }
+        internal void SetIsAttached(bool isAttached)
+        {
+            Object.Invoke("_SetIsAttached", isAttached);
         }
 
         private static void _PropagateIsAttached(DependencyPropertyWrapper prop, object value, bool newIsAttached)
         {
             if (prop._IsCustom)
                 return;
-            var so = value as ScriptObject;
-            if (so == null)
-                return;
-
-            if (Nullstone.Is(so, JsTypeNames.DependencyObject))
-            {
-                var dobn = DependencyObjectNative.GetFromScriptObject(so);
-                dobn._IsAttached = newIsAttached;
-            }
+            var dobn = DependencyObjectNative.GetFromObject(value);
+            if (dobn != null)
+                dobn.SetIsAttached(newIsAttached);
         }
 
         #endregion
@@ -537,44 +552,82 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
         #region Mentor
 
-        private DependencyObjectNative _Mentor;
-        public DependencyObjectNative Mentor
+        protected ScriptObject FindAncestorMentor()
         {
-            get { return _Mentor; }
-            set
+            var native = this;
+            var obj = Object;
+            while (native != null && !(native is FrameworkElementNative))
             {
-                if (_Mentor == value)
-                    return;
-                var oldMentor = _Mentor;
-                _Mentor = value;
-                _OnMentorChanged(oldMentor, value);
+                obj = native.GetMentor();
+                native = GetFromObject(obj);
             }
+            return obj;
         }
 
-        private void _OnMentorChanged(DependencyObjectNative oldMentor, DependencyObjectNative newMentor)
+        protected ScriptObject GetMentor()
         {
-            if (!Nullstone.Is(Object, JsTypeNames.FrameworkElement))
-            {
-                AutoCreateProvider.ForeachValue((p, v) => _PropagateMentorChanged(p, v, newMentor));
-                LocalValueProvider.ForeachValue((p, v) => _PropagateMentorChanged(p, v, newMentor));
-                if (LocalStyleProvider != null)
-                    LocalStyleProvider.ForeachValue((p, v) => _PropagateMentorChanged(p, v, newMentor));
-                if (ImplicitStyleProvider != null)
-                    ImplicitStyleProvider.ForeachValue((p, v) => _PropagateMentorChanged(p, v, newMentor));
-            }
+            return Object.Invoke("_Mentor") as ScriptObject;
         }
 
-        private static void _PropagateMentorChanged(DependencyPropertyWrapper prop, object value, DependencyObjectNative newMentor)
+        protected void SetMentor(ScriptObject value)
+        {
+            Object.Invoke("SetMentor", value);
+        }
+
+        [ScriptableMember]
+        public virtual void ChangeMentors(ScriptObject oldMentor, ScriptObject newMentor)
+        {
+            AutoCreateProvider.ForeachValue((p, v) => _PropagateMentorChanged(p, v, oldMentor, newMentor));
+            LocalValueProvider.ForeachValue((p, v) => _PropagateMentorChanged(p, v, oldMentor, newMentor));
+        }
+
+        protected void _PropagateMentorChanged(DependencyPropertyWrapper prop, object value, ScriptObject oldMentor, ScriptObject newMentor)
         {
             var dobn = GetFromObject(value);
             if (dobn == null)
                 return;
-            dobn.Mentor = newMentor;
+            dobn.SetMentor(newMentor);
         }
 
         #endregion
 
-        private int GetProviderBitmask(DependencyPropertyWrapper prop)
+        #region Name
+
+        [ScriptableMember]
+        public void RegisterNames(ScriptObject namescope, ScriptObject error)
+        {
+            AutoCreateProvider.ForeachValue((prop, value) => RegisterNames(prop, value, namescope, error));
+            LocalValueProvider.ForeachValue((prop, value) => RegisterNames(prop, value, namescope, error));
+        }
+
+        private void RegisterNames(DependencyPropertyWrapper prop, object value, ScriptObject namescope, ScriptObject error)
+        {
+            var dobn = DependencyObjectNative.GetFromObject(value);
+            if (dobn == null)
+                return;
+            dobn.Object.Invoke("_RegisterAllNamesRootedAt", namescope, error);
+        }
+
+        [ScriptableMember]
+        public void UnregisterNames(ScriptObject namescope)
+        {
+            AutoCreateProvider.ForeachValue((prop, value) => UnregisterNames(prop, value, namescope));
+            LocalValueProvider.ForeachValue((prop, value) => UnregisterNames(prop, value, namescope));
+        }
+
+        private void UnregisterNames(DependencyPropertyWrapper prop, object value, ScriptObject namescope)
+        {
+            if (prop._IsCustom)
+                return;
+            var dobn = DependencyObjectNative.GetFromObject(value);
+            if (dobn == null)
+                return;
+            dobn.Object.Invoke("_UnregisterAllNamesRootedAt", namescope);
+        }
+
+        #endregion
+
+        protected int GetProviderBitmask(DependencyPropertyWrapper prop)
         {
             if (_ProviderBitmasks.ContainsKey(prop))
                 return _ProviderBitmasks[prop];
