@@ -284,5 +284,15 @@ Control.Instance.$GetVisualStateFocus = function () {
 
 //#endregion
 
+Control._FindAncestorControl = function (source) {
+    while (source) {
+        if (source instanceof Control)
+            return source;
+        else if (!(source instanceof FrameworkElement))
+            return null;
+        source = source._GetLogicalParent();
+    }
+};
+
 Nullstone.FinishCreate(Control);
 //#endregion

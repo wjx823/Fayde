@@ -29,7 +29,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
             ControlNative sourceNative = null;
             if (source != null)
             {
-                sourceNative = ControlNative.FindLogicalParentControl(source);
+                sourceNative = ControlNative.FindAncestorControl(source);
                 source = sourceNative.Object;
             }
             

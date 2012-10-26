@@ -15,12 +15,16 @@ namespace WickedSick.Fayde.Client.NativeEngine
             RegisterObjectFactory<T>(ctor);
         }
 
+        public static ScriptObject GetCtor<T>()
+        {
+            return _Ctors[typeof(T)];
+        }
+
         private static void RegisterObjectFactory<T>(ScriptObject ctor) where T : DependencyObjectNative
         {
             var typeID = (double)ctor.GetProperty("_TypeID");
             _ObjectFactories[typeID] = so => (T)Activator.CreateInstance(typeof(T), so);
         }
-
         public static Func<ScriptObject, DependencyObjectNative> GetInstanceCreator(ScriptObject ctor)
         {
             if (ctor == null)
