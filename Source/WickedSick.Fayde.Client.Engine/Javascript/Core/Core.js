@@ -3,8 +3,15 @@
 /// <reference path="../Media/MediaParser.js"/>
 
 //#region Fayde
-
 var Fayde = {
+    LoadOptimizerPlugin: function (sender, e) {
+        var SLApp = sender.getHost();
+        Fayde.NInterop = SLApp.Content.DOInterop;
+        Fayde.SL_INTEROP_UNDEFINED = Fayde.NInterop.CreateUndefined();
+        Fayde.NInterop.RegisterNullstone(Nullstone);
+        Fayde.NInterop.RegisterTypes(Fayde, DependencyObject, DependencyProperty, UIElement, FrameworkElement, Control, Popup, TextBox, PasswordBox, TextBlock, Span, Paragraph, Section, Setter);
+        Fayde.Initialize(true);
+    },
     IsSilverlightInstalled: function (b) {
         if (b == undefined) b = null;
         var a = false,
@@ -45,11 +52,18 @@ var Fayde = {
         }
         return a
     },
+    Initialize: function (isFromPlugin) {
+        if (!isFromPlugin && Fayde.IsSilverlightInstalled("4.0.60310.0"))
+            return;
+        Fayde.Run();
+    },
+    Run: function () { },
     Start: function (rjson, json, canvas) {
         App.Instance = new App();
         App.Instance.LoadResources(rjson);
         App.Instance.LoadInitial(canvas, json);
     },
+
     TypeConverters: {
         Thickness: function (str) {
             /// <param name="str" type="String"></param>
@@ -213,5 +227,4 @@ var Fayde = {
         return new value.constructor();
     }
 };
-
 //#endregion

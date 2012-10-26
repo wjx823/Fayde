@@ -19,16 +19,9 @@ namespace WickedSick.Server.Framework.Fayde
 
         private static readonly string START_INITIALIZATION_SCRIPT =
 @"      <script type=""text/javascript"">
-        function onSilverlightError(sender, args) {
-        }
-        function pluginLoaded(sender, args) {
-            StartFayde();
-        }
-        function InitializeFayde() {
-            if (!Fayde.IsSilverlightInstalled(""4.0.60310.0""))
-                StartFayde();
-        }
-        function StartFayde() {";
+        function onSilverlightError(sender, args) { }
+        var pluginLoaded = Fayde.LoadOptimizerPlugin;
+        Fayde.Run = function () {";
 
         private static readonly string END_INITIALIZATION_SCRIPT =
 @"          Fayde.Start(rjson, json, document.getElementById(""canvas""));
@@ -111,7 +104,7 @@ namespace WickedSick.Server.Framework.Fayde
 
         public void WriteBodyStart()
         {
-            Writer.WriteLine("\t<body onload=\"InitializeFayde()\" onmousedown=\"return false;\" style=\"margin: 0;\">");
+            Writer.WriteLine("\t<body onload=\"Fayde.Initialize(false)\" onmousedown=\"return false;\" style=\"margin: 0;\">");
         }
         public void WriteBodyEnd()
         {

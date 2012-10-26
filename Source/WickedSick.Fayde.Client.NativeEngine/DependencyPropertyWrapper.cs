@@ -94,7 +94,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
         internal object _GetAutoCreatedValue(DependencyObjectNative @do)
         {
-            return _AutoCreator.InvokeSelf("GetValue", @do);
+            return _AutoCreator.Invoke("GetValue", @do);
         }
 
         internal void CallChangedCallback(DependencyObjectNative donative, PropertyChangedEventArgsNative args)
