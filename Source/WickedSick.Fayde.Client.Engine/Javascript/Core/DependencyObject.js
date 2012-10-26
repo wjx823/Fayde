@@ -27,6 +27,11 @@ DependencyObject.Instance.Init = function () {
     this.PropertyChanged = new MulticastEvent();
     this._SubPropertyListeners = [];
     this._CachedValues = {};
+
+    var nativeInterop;
+    if ((nativeInterop = Fayde.NInterop)) {
+        this._Native = nativeInterop.CreateObjectNative(this);
+    }
 };
 
 //#region Properties
@@ -209,6 +214,13 @@ DependencyObject.Instance.$SetValueInternal = function (propd, value) {
     }
 };
 DependencyObject.Instance._SetValue = function (propd, value) {
+    if (this._Native) {
+        if (value === undefined)
+            value = Fayde.SL_INTEROP_UNDEFINED;
+        this._Native.SetValue(propd, value);
+        return;
+    }
+
     if (!propd)
         throw new ArgumentException("Null dependency property.");
 
@@ -314,12 +326,18 @@ DependencyObject.Instance.$GetValue = function (propd) {
         throw new InvalidOperationException("Cannot get the DependencyProperty " + propd.Name + " on an object of type " + propd.OwnerType._TypeName);
     return this._GetValue(propd);
 };
-DependencyObject.Instance._GetValue = function (propd, startingPrecedence, endingPrecedence) {    
+DependencyObject.Instance._GetValue = function (propd, startingPrecedence, endingPrecedence) {
     var propPrecEnum = _PropertyPrecedence;
     if (startingPrecedence === undefined)
         startingPrecedence = propPrecEnum.Highest;
     if (endingPrecedence === undefined)
         endingPrecedence = propPrecEnum.Lowest;
+    if (this._Native) {
+        var val = this._Native.GetValue(propd, startingPrecedence, endingPrecedence);
+        if (val && val === Fayde.SL_INTEROP_UNDEFINED)
+            return;
+        return val;
+    }
 
     //Establish providers used
     var bitmask = this._ProviderBitmasks[propd._ID] | propd._BitmaskCache;
@@ -389,6 +407,12 @@ DependencyObject.Instance._ReadLocalValueWithError = function (propd, error) {
     return this._ReadLocalValue(propd);
 };
 DependencyObject.Instance._ReadLocalValue = function (propd) {
+    if (this._Native) {
+        var val = this._Native.ReadLocalValue(propd);
+        if (val && val === Fayde.SL_INTEROP_UNDEFINED)
+            return;
+        return val;
+    }
     return this._Providers[_PropertyPrecedence.LocalValue].GetPropertyValue(propd);
 };
 
@@ -408,6 +432,10 @@ DependencyObject.Instance.$ClearValueInternal = function (propd) {
     this._ClearValue(propd, true);
 };
 DependencyObject.Instance._ClearValue = function (propd, notifyListeners) {
+    if (this._Native) {
+        this._Native.ClearValue(propd, notifyListeners);
+        return;
+    }
     var error = new BError();
     this._ClearValueWithError(propd, true, error);
     if (error.IsErrored())

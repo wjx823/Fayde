@@ -32,20 +32,13 @@
         var TestType = Nullstone.Create("TestType", UIElement);
         TestType.Instance.Init = function () {
             this.Init$UIElement();
-            this._Native = Fayde.NInterop.CreateObjectNative(this);
+            //this._Native = Fayde.NInterop.CreateObjectNative(this);
         };
         TestType.TestProp = DependencyProperty.Register("Test", function () { return Object; }, TestType, 1);
-        TestType.Instance.SetValue = function (prop, value) {
-            if (value === undefined)
-                value = Fayde.SL_INTEROP_UNDEFINED;
-            this._Native.SetValue(prop, value);
-        };
-        TestType.Instance.GetValue = function (prop) {
-            var val = this._Native.GetValue(prop);
-            if (val && val.toString() === Fayde.SL_INTEROP_UNDEFINED.toString())
-                return;
-            return val;
-        };
+
+        Nullstone.AutoProperties(TestType, [
+            TestType.TestProp
+        ]);
         Nullstone.FinishCreate(TestType);
 
 
@@ -91,21 +84,31 @@
             Fayde.NInterop.RegisterNullstone(Nullstone);
             Fayde.NInterop.RegisterTypes(DependencyObject, DependencyProperty, UIElement, FrameworkElement, Control, Popup, TextBlock, Span, Paragraph, Section, Setter);
 
+            return;
+            alert("plugin loaded");
+
             var o;
             //o = null;
             o = new CustomType();
 
+
             var testobject = new TestType();
-            rv = testobject.GetValue(TestType.TestProp);
+            var rv = testobject.Test;
             alert(rv);
 
-            testobject.SetValue(TestType.TestProp, o);
-            var rv = testobject.GetValue(TestType.TestProp);
+            testobject.Test = o;
+            rv = testobject.Test;
             alert(rv.somemember);
+        }
+        function test() {
+            //alert("body onload");
+
+            var testobject = new TestType();
+            alert(testobject.Test);
         }
     </script>
 </head>
-<body>
+<body onload="test()">
     <form id="form1" runat="server" style="height:100%">
     <div id="silverlightControlHost">
         <object data="data:application/x-silverlight-2," type="application/x-silverlight-2" width="100%" height="100%">

@@ -220,7 +220,8 @@ Nullstone._CreateDP = function (ns, dp, converter) {
             value = this._CachedValues[dp._ID];
         } else {
             value = this.$GetValue(dp);
-            this._CachedValues[dp._ID] = value;
+            if (!this._Native) //only cache when not using native
+                this._CachedValues[dp._ID] = value;
         }
         return value;
     };

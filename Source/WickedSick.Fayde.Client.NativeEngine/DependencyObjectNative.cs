@@ -61,9 +61,9 @@ namespace WickedSick.Fayde.Client.NativeEngine
         #region GetValue
 
         [ScriptableMember]
-        public object GetValue(ScriptObject prop)
+        public object GetValue(ScriptObject prop, double startingPrec, double endingPrec)
         {
-            return GetValue(DependencyPropertyWrapper.Lookup(prop));
+            return GetValue(DependencyPropertyWrapper.Lookup(prop), (int)startingPrec, (int)endingPrec);
         }
         public object GetValue(DependencyPropertyWrapper prop, int startingPrec = PropertyPrecedence.Highest, int endingPrec = PropertyPrecedence.Lowest)
         {
