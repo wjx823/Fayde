@@ -5,6 +5,51 @@
 //#region Fayde
 
 var Fayde = {
+    IsSilverlightInstalled: function (b) {
+        if (b == undefined) b = null;
+        var a = false,
+            m = null;
+        try {
+            var i = null,
+                j = false;
+            if (window.ActiveXObject) try {
+                i = new ActiveXObject("AgControl.AgControl");
+                if (b === null) a = true;
+                else if (i.IsVersionSupported(b)) a = true;
+                i = null
+            } catch (l) {
+                j = true
+            } else j = true;
+            if (j) {
+                var k = navigator.plugins["Silverlight Plug-In"];
+                if (k) if (b === null) a = true;
+                else {
+                    var h = k.description;
+                    if (h === "1.0.30226.2") h = "2.0.30226.2";
+                    var c = h.split(".");
+                    while (c.length > 3) c.pop();
+                    while (c.length < 4) c.push(0);
+                    var e = b.split(".");
+                    while (e.length > 4) e.pop();
+                    var d, g, f = 0;
+                    do {
+                        d = parseInt(e[f]);
+                        g = parseInt(c[f]);
+                        f++
+                    } while (f < e.length && d === g);
+                    if (d <= g && !isNaN(d)) a = true
+                }
+            }
+        } catch (l) {
+            a = false
+        }
+        return a
+    },
+    Start: function (rjson, json, canvas) {
+        App.Instance = new App();
+        App.Instance.LoadResources(rjson);
+        App.Instance.LoadInitial(canvas, json);
+    },
     TypeConverters: {
         Thickness: function (str) {
             /// <param name="str" type="String"></param>

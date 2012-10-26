@@ -55,6 +55,7 @@ namespace WickedSick.Server.Framework.Fayde
                 writer.WriteHeadEnd();
                 writer.WriteBodyStart();
                 writer.WriteCanvas();
+                writer.WriteSilverlightOptimizer("ClientBin/WickedSick.Fayde.Client.NativeEngine.xap");
                 writer.WriteBodyEnd();
                 writer.WriteEnd();
             }

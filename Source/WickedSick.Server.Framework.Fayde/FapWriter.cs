@@ -7,6 +7,34 @@ namespace WickedSick.Server.Framework.Fayde
 {
     public class FapWriter : IDisposable
     {
+        private static readonly string OPTIMIZER_EMBED_HTML =
+@"      <object data=""data:application/x-silverlight-2,"" type=""application/x-silverlight-2"">
+        <param name=""source"" value=""{0}""/>
+        <param name=""onError"" value=""onSilverlightError"" />
+        <param name=""onLoad"" value=""pluginLoaded"" />
+        <param name=""background"" value=""white"" />
+        <param name=""minRuntimeVersion"" value=""4.0.60310.0"" />
+        <param name=""autoUpgrade"" value=""true"" />
+        </object>";
+
+        private static readonly string START_INITIALIZATION_SCRIPT =
+@"      <script type=""text/javascript"">
+        function onSilverlightError(sender, args) {
+        }
+        function pluginLoaded(sender, args) {
+            StartFayde();
+        }
+        function InitializeFayde() {
+            if (!Fayde.IsSilverlightInstalled(""4.0.60310.0""))
+                StartFayde();
+        }
+        function StartFayde() {";
+
+        private static readonly string END_INITIALIZATION_SCRIPT =
+@"          Fayde.Start(rjson, json, document.getElementById(""canvas""));
+        }
+        </script>";
+
         public FapWriter(Stream outputStream)
         {
             Writer = new StreamWriter(outputStream);
@@ -64,32 +92,21 @@ namespace WickedSick.Server.Framework.Fayde
             }
             Writer.WriteLine(string.Format("\t\t<script src=\"{0}Fayde.Generic.js\" type=\"text/javascript\"></script>", scriptResolution));
         }
-
+        
         public void WriteAppLoadScript(FaydeApplication fap)
         {
-            Writer.WriteLine("\t\t<script type=\"text/javascript\">");
-            Writer.WriteLine("\t\t\tfunction InitializeFayde() {");
-            Writer.WriteLine("\t\t\t\tApp.Instance = new App();");
-
+            string rjson = "{}";
             if (fap.Resources != null)
-            {
-                Writer.Write("\t\t\t\tvar rjson = ");
-                Writer.Write(fap.Resources.ToJson(4));
-                Writer.WriteLine(";");
-                Writer.WriteLine("\t\t\t\tApp.Instance.LoadResources(rjson);");
-            }
+                rjson = fap.Resources.ToJson(0);
 
-            Writer.Write("\t\t\t\tvar json = ");
+            string json = "{}";
             if (fap.Content != null)
-                Writer.Write(fap.Content.ToJson(4));
-            else
-                Writer.Write("{}");
-            Writer.WriteLine(";");
+                json = fap.Content.ToJson(0);
 
-            Writer.WriteLine("\t\t\t\tApp.Instance.LoadInitial(document.getElementById(\"canvas\"), json);");
-
-            Writer.WriteLine("\t\t\t};");
-            Writer.WriteLine("\t\t</script>");
+            Writer.WriteLine(START_INITIALIZATION_SCRIPT);
+            Writer.WriteLine(string.Format("var rjson = {0};", rjson));
+            Writer.WriteLine(string.Format("var json = {0};", json));
+            Writer.WriteLine(END_INITIALIZATION_SCRIPT);
         }
 
         public void WriteBodyStart()
@@ -104,6 +121,11 @@ namespace WickedSick.Server.Framework.Fayde
         public void WriteCanvas()
         {
             Writer.WriteLine("\t\t<canvas id=\"canvas\" tabindex=\"1\" style=\"position: absolute;\"></canvas>");
+        }
+
+        public void WriteSilverlightOptimizer(string xapFilepath)
+        {
+            Writer.Write(string.Format(OPTIMIZER_EMBED_HTML, xapFilepath));
         }
     }
 }
