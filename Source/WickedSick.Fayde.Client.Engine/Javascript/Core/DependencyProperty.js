@@ -332,5 +332,28 @@ DependencyProperty._LookupType = function (name) {
     return eval(name);
 };
 
+DependencyProperty.Instance._GetInheritable = function (obj) {
+    var inh = this._Inheritable || 0;
+    if (inh && this.Name === "FlowDirection" && (obj instanceof Image || obj instanceof MediaElement))
+        inh = 0;
+    return inh;
+};
+DependencyProperty._GetFromInheritable = function (inheritable, ancestor) {
+    var list = DependencyProperty._Inherited[inheritable];
+    if (!list)
+        return;
+
+    var len = list.length;
+    if (len > 0 && list[0].Name === "FlowDirection") {
+        if (ancestor instanceof Fayde.Image || ancestor instanceof MediaElement)
+            return;
+    }
+    for (var i = 0; i < len; i++) {
+        var propd = list[i];
+        if (ancestor instanceof propd.OwnerType)
+            return propd;
+    }
+};
+
 Nullstone.FinishCreate(DependencyProperty);
 //#endregion

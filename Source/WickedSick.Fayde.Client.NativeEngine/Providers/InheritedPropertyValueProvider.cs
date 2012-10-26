@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Browser;
 
 namespace WickedSick.Fayde.Client.NativeEngine.Providers
 {
@@ -14,7 +15,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
 
         public override object GetPropertyValue(DependencyPropertyWrapper prop)
         {
-            var inheritable = GetInheritable(_Object, prop);
+            var inheritable = prop.GetInheritable(_Object);
             if (inheritable == Inheritable.None)
                 return DependencyObjectNative.UNDEFINED;
 
@@ -22,7 +23,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
             if (ancestor == null)
                 return DependencyObjectNative.UNDEFINED;
 
-            var ancestorProp = GetProperty(inheritable, ancestor);
+            var ancestorProp = DependencyPropertyWrapper.GetFromInheritable(inheritable, ancestor);
             if (ancestorProp == null)
                 return DependencyObjectNative.UNDEFINED;
 
@@ -49,7 +50,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
 
         public void PropagateInheritedProperty(DependencyPropertyWrapper prop, DependencyObjectNative source, DependencyObjectNative subtree)
         {
-            var inheritable = GetInheritable(source, prop);
+            var inheritable = prop.GetInheritable(source);
             if (inheritable == 0)
                 return;
             var objContext = InheritedContext.FromObject(_Object, new InheritedContext());
@@ -149,7 +150,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
         {
             if (source == null) return;
             if ((props & prop) == 0) return;
-            var sourceProp = GetProperty(prop, source);
+            var sourceProp = DependencyPropertyWrapper.GetFromInheritable(prop, source);
             var val = source.GetValue(sourceProp);
             if (val != null && val != DependencyObjectNative.UNDEFINED)
                 element._PropagateInheritedValue(prop, source, val);
@@ -160,19 +161,6 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
             if ((props & prop) == 0) return;
             if (Nullstone.RefEquals(source, element._GetInheritedValueSource(prop)))
                 element._PropagateInheritedValue(prop, null, DependencyObjectNative.UNDEFINED);
-        }
-
-
-        public static int GetInheritable(object ancestor, DependencyPropertyWrapper prop)
-        {
-            var inh = prop._Inheritable;
-            if (inh != 0 && prop.Name == "FlowDirection" && (false /* is Image or is MediaElement */))
-                inh = 0;
-            return inh;
-        }
-        public static DependencyPropertyWrapper GetProperty(int inheritable, DependencyObjectNative ancestor)
-        {
-            throw new NotImplementedException();
         }
     }
 }

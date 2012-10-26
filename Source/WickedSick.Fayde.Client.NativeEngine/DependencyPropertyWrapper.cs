@@ -34,6 +34,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
             _InheritableLazy = new LazyMember<double?>(@object, "_Inheritable");
         }
 
+        public static ScriptObject JsCtor { get; set; }
         public ScriptObject Object { get; protected set; }
 
         #region Javascript Members
@@ -68,6 +69,9 @@ namespace WickedSick.Fayde.Client.NativeEngine
         private LazyMember<double?> _InheritableLazy;
         public int _Inheritable { get { return (int)(_InheritableLazy.Value ?? 0.0); } }
 
+        private LazyMember<ScriptObject> _OwnerTypeLazy;
+        public ScriptObject OwnerType { get { return _OwnerTypeLazy.Value as ScriptObject; } }
+
         #endregion
 
         private int _BitmaskCache;
@@ -98,6 +102,22 @@ namespace WickedSick.Fayde.Client.NativeEngine
             if (_ChangedCallback == null)
                 return;
             Object.InvokeSelf("_ChangedCallback", donative.Object, args.Object);
+        }
+
+        internal int GetInheritable(object ancestor)
+        {
+            var rv = Object.Invoke("_GetInheritable", ancestor);
+            if (rv == null)
+                return 0;
+            return (int)(double)rv;
+        }
+
+        internal static DependencyPropertyWrapper GetFromInheritable(int inheritable, object ancestor)
+        {
+            var rv = JsCtor.Invoke("_GetFromInheritable", inheritable, ancestor) as ScriptObject;
+            if (rv == null)
+                return null;
+            return DependencyPropertyWrapper.Lookup(rv);
         }
     }
 }

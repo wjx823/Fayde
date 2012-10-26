@@ -376,7 +376,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
                 return true;
 
             InheritedProvider.SetPropertySource(inheritable, source);
-            var prop = InheritedPropertyValueProvider.GetProperty(inheritable, this);
+            var prop = DependencyPropertyWrapper.GetFromInheritable(inheritable, this);
             if (prop == null)
                 return false;
 
@@ -395,7 +395,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
                 return;
             if (source == null)
             {
-                var prop = InheritedPropertyValueProvider.GetProperty(inheritable, this);
+                var prop = DependencyPropertyWrapper.GetFromInheritable(inheritable, this);
                 if (prop == null)
                     return;
                 _ProviderBitmasks[prop] = GetProviderBitmask(prop) & ~(1 << PropertyPrecedence.Inherited);

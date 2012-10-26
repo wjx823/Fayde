@@ -63,7 +63,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
 
         public DependencyObjectNative GetLocalSource(DependencyObjectNative obj, int prop)
         {
-            var propd = InheritedPropertyValueProvider.GetProperty(prop, obj);
+            var propd = DependencyPropertyWrapper.GetFromInheritable(prop, obj);
             if (propd == null)
                 return null;
 
