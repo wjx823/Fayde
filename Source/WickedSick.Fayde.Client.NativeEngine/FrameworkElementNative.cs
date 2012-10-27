@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Browser;
+using System.Linq;
 using WickedSick.Fayde.Client.NativeEngine.Providers;
 
 namespace WickedSick.Fayde.Client.NativeEngine
@@ -54,9 +55,9 @@ namespace WickedSick.Fayde.Client.NativeEngine
         #region ImplicitStyle
 
         [ScriptableMember]
-        public void SetImplicitStyles(int styleMask, ScriptObject[] styles, ScriptObject error)
+        public void SetImplicitStyles(int styleMask, ScriptObject styles, ScriptObject error)
         {
-            ImplicitStyleProvider.SetStyles(styleMask, styles, error);
+            ImplicitStyleProvider.SetStyles(styleMask, styles.GetItems<ScriptObject>().ToArray(), error);
         }
 
         [ScriptableMember]
@@ -69,7 +70,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
         internal ScriptObject CallComputeActualSize()
         {
-            return Object.InvokeSelf("_ComputeActualSize") as ScriptObject;
+            return Object.Invoke("_ComputeActualSize") as ScriptObject;
         }
 
         [ScriptableMember]

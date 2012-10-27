@@ -7,7 +7,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Walkers
 {
     public class DeepStyleWalker
     {
-        private SetterNative[] _Setters;
+        private SetterNative[] _Setters = new SetterNative[0];
         private int _Offset = 0;
 
         public DeepStyleWalker(ScriptObject style)
@@ -71,8 +71,10 @@ namespace WickedSick.Fayde.Client.NativeEngine.Walkers
 
         private IEnumerable<SetterNative> GetSetters(ScriptObject style, Dictionary<DependencyPropertyWrapper, SetterNative> visitedDPs)
         {
-            var setters = (style.GetProperty("Setters") as ScriptObject).GetProperty("_ht") as ScriptObject[];
-            for (int i = setters.Length - 1; i >= 0; i--)
+            var settersArray = (style.GetProperty("Setters") as ScriptObject).GetProperty("_ht") as ScriptObject;
+            var setters = settersArray.GetItems<ScriptObject>().ToList();
+
+            for (int i = setters.Count - 1; i >= 0; i--)
             {
                 var setter = DependencyObjectNative.GetFromScriptObject(setters[i]) as SetterNative;
                 if (setter == null)

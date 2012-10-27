@@ -225,13 +225,16 @@ namespace WickedSick.Fayde.Client.NativeEngine
                     if (!prop._IsCustom)
                     {
                         var dobn = GetFromScriptObject(dob);
-                        dobn.CallRemoveParent(this, error);
-                        dobn.CallRemovePropertyChangedListener(Object, prop);
-                        dobn.SetIsAttached(false);
-                        if (Nullstone.Is(dob, JsTypeNames.Collection))
+                        if (dobn != null)
                         {
-                            //TODO: Changed Event - Remove Handler
-                            //TODO: Item Changed Event - Remove Handler
+                            dobn.CallRemoveParent(this, error);
+                            dobn.CallRemovePropertyChangedListener(Object, prop);
+                            dobn.SetIsAttached(false);
+                            if (Nullstone.Is(dob, JsTypeNames.Collection))
+                            {
+                                //TODO: Changed Event - Remove Handler
+                                //TODO: Item Changed Event - Remove Handler
+                            }
                         }
                     }
                 }
@@ -516,8 +519,9 @@ namespace WickedSick.Fayde.Client.NativeEngine
         #region IsAttached
 
         [ScriptableMember]
-        public void _OnAttachedChanged(bool isAttached)
+        public void _OnIsAttachedChanged(object isAttachedObject)
         {
+            var isAttached = isAttachedObject != null && isAttachedObject is bool && (bool)isAttachedObject;
             LocalValueProvider.ForeachValue((p, v) => _PropagateIsAttached(p, v, isAttached));
             AutoCreateProvider.ForeachValue((p, v) => _PropagateIsAttached(p, v, isAttached));
         }

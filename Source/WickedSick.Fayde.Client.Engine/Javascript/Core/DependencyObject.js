@@ -376,8 +376,12 @@ DependencyObject.Instance._GetValue = function (propd, startingPrecedence, endin
     return undefined;
 };
 DependencyObject.Instance._GetValueNoAutoCreate = function (propd) {
-    if (this._Native)
-        return this._Native.GetValueNoAutoCreate(propd);
+    if (this._Native) {
+        var val = this._Native.GetValueNoAutoCreate(propd);
+        if (val && val === Fayde.SL_INTEROP_UNDEFINED)
+            return;
+        return val;
+    }
 
     var propPrecEnum = _PropertyPrecedence;
     var v = this._GetValue(propd, propPrecEnum.LocalValue, propPrecEnum.InheritedDataContext);
@@ -386,8 +390,12 @@ DependencyObject.Instance._GetValueNoAutoCreate = function (propd) {
     return v;
 };
 DependencyObject.Instance._GetValueNoDefault = function (propd) {
-    if (this._Native)
-        this._Native.GetValueNoDefault(propd);
+    if (this._Native) {
+        var val = this._Native.GetValueNoDefault(propd);
+        if (val && val === Fayde.SL_INTEROP_UNDEFINED)
+            return;
+        return val;
+    }
 
     var value;
     var propPrecDefaultValue = _PropertyPrecedence.DefaultValue;

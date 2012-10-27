@@ -32,6 +32,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
             _AlwaysChangeLazy = new LazyMember<bool?>(@object, "_AlwaysChange");
             _ChangedCallbackLazy = new LazyMember<object>(@object, "_ChangedCallback");
             _InheritableLazy = new LazyMember<double?>(@object, "_Inheritable");
+            _OwnerTypeLazy = new LazyMember<ScriptObject>(@object, "OwnerType");
         }
 
         public static ScriptObject JsCtor { get; set; }

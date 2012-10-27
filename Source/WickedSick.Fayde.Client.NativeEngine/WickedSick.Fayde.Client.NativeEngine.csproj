@@ -74,6 +74,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ArrayEx.cs" />
     <Compile Include="Controls\ControlNative.cs" />
     <Compile Include="Controls\PasswordBoxNative.cs" />
     <Compile Include="Controls\TextBoxNative.cs" />
