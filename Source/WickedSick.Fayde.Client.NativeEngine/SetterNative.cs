@@ -3,6 +3,7 @@ using System.Windows.Browser;
 
 namespace WickedSick.Fayde.Client.NativeEngine
 {
+    [ScriptableType]
     public class SetterNative : DependencyObjectNative
     {
         public static DependencyPropertyWrapper PropertyProperty;

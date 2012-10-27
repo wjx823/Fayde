@@ -3,6 +3,7 @@ using System.Windows.Browser;
 
 namespace WickedSick.Fayde.Client.NativeEngine.Documents
 {
+    [ScriptableType]
     public abstract class TextElementNative : DependencyObjectNative
     {
         public TextElementNative(ScriptObject @object)

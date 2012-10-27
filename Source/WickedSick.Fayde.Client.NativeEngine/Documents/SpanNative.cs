@@ -2,6 +2,7 @@
 
 namespace WickedSick.Fayde.Client.NativeEngine.Documents
 {
+    [ScriptableType]
     public class SpanNative : TextElementNative
     {
         public static DependencyPropertyWrapper InlinesProperty;

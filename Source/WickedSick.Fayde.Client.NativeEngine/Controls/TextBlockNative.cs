@@ -4,6 +4,7 @@ using WickedSick.Fayde.Client.NativeEngine.Providers;
 
 namespace WickedSick.Fayde.Client.NativeEngine.Controls
 {
+    [ScriptableType]
     public class TextBlockNative : FrameworkElementNative
     {
         public static DependencyPropertyWrapper InlinesProperty;

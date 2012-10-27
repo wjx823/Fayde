@@ -17,7 +17,10 @@ namespace WickedSick.Fayde.Client.NativeEngine
         {
             if (so == null)
                 return null;
-            return so.GetProperty("_Native") as DependencyObjectNative;
+            var obj = so.GetProperty("_Native") as ScriptObject;
+            if (obj == null)
+                return null;
+            return obj.ManagedObject as DependencyObjectNative;
         }
 
 
@@ -364,7 +367,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
                     newDON._ResourceBase = _ResourceBase;
                     CallAddCollectionListeners(newDON);
-                    oldDON.CallAddPropertyChangedListener(Object, prop);
+                    newDON.CallAddPropertyChangedListener(Object, prop);
                 }
                 else
                 {
@@ -439,6 +442,18 @@ namespace WickedSick.Fayde.Client.NativeEngine
             return Enumerable.Empty<DependencyObjectNative>();
         }
 
+        [ScriptableMember]
+        public void PropagateOnAdd(ScriptObject item)
+        {
+            InheritedProvider.PropagateInheritedPropertiesOnAddingToTree(DependencyObjectNative.GetFromScriptObject(item));
+        }
+
+        [ScriptableMember]
+        public void PropagateOnRemove(ScriptObject item)
+        {
+            InheritedProvider.ClearInheritedPropertiesOnRemovingFromTree(DependencyObjectNative.GetFromScriptObject(item));
+        }
+
         #endregion
 
         #region Property Changed
@@ -450,11 +465,11 @@ namespace WickedSick.Fayde.Client.NativeEngine
         }
         private void CallAddPropertyChangedListener(ScriptObject so, DependencyPropertyWrapper prop)
         {
-            Object.InvokeSelf("AddPropertyChangedListener", so, prop.Object);
+            Object.Invoke("AddPropertyChangedListener", so, prop.Object);
         }
         private void CallRemovePropertyChangedListener(ScriptObject so, DependencyPropertyWrapper prop)
         {
-            Object.InvokeSelf("RemovePropertyChangedListener", so, prop.Object);
+            Object.Invoke("RemovePropertyChangedListener", so, prop.Object);
         }
         private void CallAddCollectionListeners(DependencyObjectNative don)
         {
@@ -542,11 +557,11 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
         private void CallAddParent(DependencyObjectNative parent, bool mergeNamesFromSubtree)
         {
-            Object.InvokeSelf("_AddParent", parent.Object, mergeNamesFromSubtree);
+            Object.Invoke("_AddParent", parent.Object, mergeNamesFromSubtree);
         }
         private void CallRemoveParent(DependencyObjectNative parent)
         {
-            Object.InvokeSelf("_RemoveParent", parent.Object);
+            Object.Invoke("_RemoveParent", parent.Object);
         }
 
         #endregion

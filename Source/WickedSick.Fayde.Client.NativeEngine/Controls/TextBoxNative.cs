@@ -3,6 +3,7 @@ using WickedSick.Fayde.Client.NativeEngine.Providers;
 
 namespace WickedSick.Fayde.Client.NativeEngine.Controls
 {
+    [ScriptableType]
     public class TextBoxNative : ControlNative
     {
         public static DependencyPropertyWrapper ForegroundProperty;

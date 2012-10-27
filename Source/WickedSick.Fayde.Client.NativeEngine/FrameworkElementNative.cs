@@ -4,6 +4,7 @@ using WickedSick.Fayde.Client.NativeEngine.Providers;
 
 namespace WickedSick.Fayde.Client.NativeEngine
 {
+    [ScriptableType]
     public class FrameworkElementNative  : UIElementNative
     {
         public FrameworkElementNative(ScriptObject @object)

@@ -3,6 +3,7 @@ using System.Windows.Browser;
 
 namespace WickedSick.Fayde.Client.NativeEngine
 {
+    [ScriptableType]
     public class PopupNative : FrameworkElementNative
     {
         public static DependencyPropertyWrapper ChildProperty;
