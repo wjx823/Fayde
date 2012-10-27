@@ -19,7 +19,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
             return _ht[prop];
         }
 
-        public override void RecomputePropertyValueOnClear(DependencyPropertyWrapper prop)
+        public override void RecomputePropertyValueOnClear(DependencyPropertyWrapper prop, ScriptObject error)
         {
             var walker = new DeepStyleWalker(_Style);
             SetterNative setter;
@@ -32,11 +32,11 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
                 var newValue = setter.ConvertedValue;
                 var oldValue = _ht[prop];
                 _ht[prop] = newValue;
-                _Object._ProviderValueChanged(_Precedence, prop, oldValue, newValue, true, true, true);
+                _Object._ProviderValueChanged(_Precedence, prop, oldValue, newValue, true, true, true, error);
             }
         }
 
-        public void UpdateStyle(ScriptObject style)
+        public void UpdateStyle(ScriptObject style, ScriptObject error)
         {
             var oldWalker = new DeepStyleWalker(_Style);
             var newWalker = new DeepStyleWalker(style);
@@ -62,7 +62,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
                     oldValue = oldSetter.ConvertedValue;
                     newValue = DependencyObjectNative.UNDEFINED;
                     _ht.Remove(oldProp);
-                    _Object._ProviderValueChanged(_Precedence, oldProp, oldValue, newValue, true, true, false);
+                    _Object._ProviderValueChanged(_Precedence, oldProp, oldValue, newValue, true, true, false, error);
                     oldSetter = oldWalker.Step();
                 }
                 else if (oldProp != null && newProp != null && oldProp._ID == newProp._ID)
@@ -70,7 +70,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
                     oldValue = oldSetter.ConvertedValue;
                     newValue = newSetter.ConvertedValue;
                     _ht[oldProp] = newValue;
-                    _Object._ProviderValueChanged(_Precedence, oldProp, oldValue, newValue, true, true, false);
+                    _Object._ProviderValueChanged(_Precedence, oldProp, oldValue, newValue, true, true, false, error);
                     oldSetter = oldWalker.Step();
                     newSetter = newWalker.Step();
                 }
@@ -79,7 +79,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
                     oldValue = DependencyObjectNative.UNDEFINED;
                     newValue = newSetter.ConvertedValue;
                     _ht[newProp] = newValue;
-                    _Object._ProviderValueChanged(_Precedence, newProp, oldValue, newValue, true, true, false);
+                    _Object._ProviderValueChanged(_Precedence, newProp, oldValue, newValue, true, true, false, error);
                     newSetter = newWalker.Step();
                 }
             }

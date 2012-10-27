@@ -30,10 +30,10 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
             if (source != null)
             {
                 sourceNative = ControlNative.FindAncestorControl(source);
-                source = sourceNative.Object;
+                source = sourceNative == null ? null : sourceNative.Object;
             }
             
-            if (!Nullstone.RefEquals(_Source.Object, source))
+            if (!Nullstone.RefEquals(_Source, sourceNative))
             {
                 sourceNative = sourceNative ?? DependencyObjectNative.GetFromScriptObject(source) as ControlNative;
                 _DetachListener(_Source);
@@ -70,7 +70,8 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
             {
                 var oldValue = _CurrentValue;
                 _CurrentValue = newValue;
-                _Object._ProviderValueChanged(_Precedence, IsEnabledProperty, oldValue, newValue, true, false, false);
+                var error = HtmlPage.Window.CreateInstance("BError");
+                _Object._ProviderValueChanged(_Precedence, IsEnabledProperty, oldValue, newValue, true, false, false, error);
                 return true;
             }
             return false;

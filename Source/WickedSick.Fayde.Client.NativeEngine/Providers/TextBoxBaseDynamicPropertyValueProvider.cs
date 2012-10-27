@@ -45,24 +45,24 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
             return base.GetPropertyValue(prop);
         }
 
-        public override void RecomputePropertyValueOnClear(DependencyPropertyWrapper prop)
+        public override void RecomputePropertyValueOnClear(DependencyPropertyWrapper prop, ScriptObject error)
         {
             if (prop._ID == ForegroundProp._ID)
                 _SelectionForeground = null;
             else if (prop._ID == BackgroundProp._ID)
                 _SelectionBackground = null;
             else
-                base.RecomputePropertyValueOnClear(prop);
+                base.RecomputePropertyValueOnClear(prop, error);
         }
 
-        public override void RecomputePropertyValueOnLower(DependencyPropertyWrapper prop)
+        public override void RecomputePropertyValueOnLower(DependencyPropertyWrapper prop, ScriptObject error)
         {
             if (prop._ID == ForegroundProp._ID)
                 _SelectionForeground = null;
             else if (prop._ID == BackgroundProp._ID)
                 _SelectionBackground = null;
             else
-                base.RecomputePropertyValueOnLower(prop);
+                base.RecomputePropertyValueOnLower(prop, error);
         }
 
         internal void InitSelectionBrushes(object foreground, object background)

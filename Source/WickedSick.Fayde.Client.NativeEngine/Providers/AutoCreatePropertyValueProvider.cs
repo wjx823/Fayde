@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Browser;
 
 namespace WickedSick.Fayde.Client.NativeEngine.Providers
 {
@@ -22,7 +23,8 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
                 return val;
 
             _ht[prop] = val;
-            _Object._ProviderValueChanged(_Precedence, prop, DependencyObjectNative.UNDEFINED, val, false, true, false);
+            var error = HtmlPage.Window.CreateInstance("BError");
+            _Object._ProviderValueChanged(_Precedence, prop, DependencyObjectNative.UNDEFINED, val, false, true, false, error);
             return val;
         }
 
@@ -33,7 +35,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
             return DependencyObjectNative.UNDEFINED;
         }
 
-        public override void RecomputePropertyValueOnClear(DependencyPropertyWrapper prop)
+        public override void RecomputePropertyValueOnClear(DependencyPropertyWrapper prop, ScriptObject error)
         {
             ClearValue(prop);
         }

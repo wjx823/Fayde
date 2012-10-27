@@ -37,7 +37,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
             return DependencyObjectNative.UNDEFINED;
         }
 
-        public override void RecomputePropertyValueOnClear(DependencyPropertyWrapper propd)
+        public override void RecomputePropertyValueOnClear(DependencyPropertyWrapper propd, ScriptObject error)
         {
             if (_Styles == null)
                 return;
@@ -53,11 +53,11 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
                 var newValue = setter.ConvertedValue;
                 var oldValue = _ht[propd];
                 _ht[propd] = newValue;
-                _Object._ProviderValueChanged(_Precedence, propd, oldValue, newValue, true, true, true);
+                _Object._ProviderValueChanged(_Precedence, propd, oldValue, newValue, true, true, true, error);
             }
         }
 
-        internal void SetStyles(int styleMask, ScriptObject[] styles)
+        internal void SetStyles(int styleMask, ScriptObject[] styles, ScriptObject error)
         {
             if (styles == null)
                 return;
@@ -79,9 +79,9 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
             if ((styleMask & StyleMask.VisualTree) != 0)
                 newStyles[StyleIndex.VisualTree] = styles[StyleIndex.VisualTree];
 
-            ApplyStyles(_StyleMask | styleMask, newStyles);
+            ApplyStyles(_StyleMask | styleMask, newStyles, error);
         }
-        internal void ClearStyles(int styleMask)
+        internal void ClearStyles(int styleMask, ScriptObject error)
         {
             if (_Styles == null)
                 return;
@@ -95,9 +95,9 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
             if ((styleMask & StyleMask.VisualTree) != 0)
                 newStyles[StyleIndex.VisualTree] = null;
 
-            ApplyStyles(_StyleMask & ~styleMask, newStyles);
+            ApplyStyles(_StyleMask & ~styleMask, newStyles, error);
         }
-        private void ApplyStyles(int styleMask, ScriptObject[] styles)
+        private void ApplyStyles(int styleMask, ScriptObject[] styles, ScriptObject error)
         {
             if (!IsChanged(styleMask, styles))
                 return;
@@ -125,7 +125,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
                     oldValue = oldSetter.ConvertedValue;
                     newValue = DependencyObjectNative.UNDEFINED;
                     _ht.Remove(oldProp);
-                    _Object._ProviderValueChanged(_Precedence, oldProp, oldValue, newValue, true, true, false);
+                    _Object._ProviderValueChanged(_Precedence, oldProp, oldValue, newValue, true, true, false, error);
                     oldSetter = oldWalker.Step();
                 }
                 else if (oldProp != null && newProp != null && oldProp._ID == newProp._ID)
@@ -133,7 +133,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
                     oldValue = oldSetter.ConvertedValue;
                     newValue = newSetter.ConvertedValue;
                     _ht[oldProp] = newValue;
-                    _Object._ProviderValueChanged(_Precedence, oldProp, oldValue, newValue, true, true, false);
+                    _Object._ProviderValueChanged(_Precedence, oldProp, oldValue, newValue, true, true, false, error);
                     oldSetter = oldWalker.Step();
                     newSetter = newWalker.Step();
                 }
@@ -142,7 +142,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
                     oldValue = DependencyObjectNative.UNDEFINED;
                     newValue = newSetter.ConvertedValue;
                     _ht[newProp] = newValue;
-                    _Object._ProviderValueChanged(_Precedence, newProp, oldValue, newValue, true, true, false);
+                    _Object._ProviderValueChanged(_Precedence, newProp, oldValue, newValue, true, true, false, error);
                     newSetter = newWalker.Step();
                 }
             }

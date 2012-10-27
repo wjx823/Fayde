@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Browser;
 
 namespace WickedSick.Fayde.Client.NativeEngine.Providers
 {
@@ -15,8 +16,8 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
 
         public abstract object GetPropertyValue(DependencyPropertyWrapper prop);
 
-        public virtual void RecomputePropertyValueOnClear(DependencyPropertyWrapper prop) { }
-        public virtual void RecomputePropertyValueOnLower(DependencyPropertyWrapper prop) { }
+        public virtual void RecomputePropertyValueOnClear(DependencyPropertyWrapper prop, ScriptObject error) { }
+        public virtual void RecomputePropertyValueOnLower(DependencyPropertyWrapper prop, ScriptObject error) { }
 
         public virtual void ForeachValue(Action<DependencyPropertyWrapper, object> action) { }
     }

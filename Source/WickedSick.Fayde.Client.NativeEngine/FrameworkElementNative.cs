@@ -44,9 +44,9 @@ namespace WickedSick.Fayde.Client.NativeEngine
         #region LocalStyle
 
         [ScriptableMember]
-        public void UpdateLocalStyle(ScriptObject newStyle)
+        public void UpdateLocalStyle(ScriptObject newStyle, ScriptObject error)
         {
-            StyleProvider.UpdateStyle(newStyle);
+            StyleProvider.UpdateStyle(newStyle, error);
         }
 
         #endregion
@@ -54,15 +54,15 @@ namespace WickedSick.Fayde.Client.NativeEngine
         #region ImplicitStyle
 
         [ScriptableMember]
-        public void SetImplicitStyles(int styleMask, ScriptObject[] styles)
+        public void SetImplicitStyles(int styleMask, ScriptObject[] styles, ScriptObject error)
         {
-            ImplicitStyleProvider.SetStyles(styleMask, styles);
+            ImplicitStyleProvider.SetStyles(styleMask, styles, error);
         }
 
         [ScriptableMember]
-        public void ClearImplicitStyles(int styleMask)
+        public void ClearImplicitStyles(int styleMask, ScriptObject error)
         {
-            ImplicitStyleProvider.ClearStyles(styleMask);
+            ImplicitStyleProvider.ClearStyles(styleMask, error);
         }
 
         #endregion

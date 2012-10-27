@@ -23,10 +23,9 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
 
         internal void SetDataSource(ScriptObject source)
         {
-            if (Nullstone.RefEquals(this._Source.Object, source))
-                return;
-
             var sourceNative = DependencyObjectNative.GetFromScriptObject(source) as FrameworkElementNative;
+            if (Nullstone.RefEquals(this._Source, sourceNative))
+                return;
 
             var oldValue = this._Source == null ? DependencyObjectNative.UNDEFINED : this._Source.GetValue(DataContextProperty);
             var newValue = sourceNative == null ? DependencyObjectNative.UNDEFINED : sourceNative.GetValue(DataContextProperty);
@@ -36,7 +35,10 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
             _AttachListener(this._Source);
 
             if (!Nullstone.Equals(oldValue, newValue))
-                _Object._ProviderValueChanged(_Precedence, DataContextProperty, oldValue, newValue, false, false, false);
+            {
+                var error = HtmlPage.Window.CreateInstance("BError");
+                _Object._ProviderValueChanged(_Precedence, DataContextProperty, oldValue, newValue, false, false, false, error);
+            }
         }
 
         private void _AttachListener(FrameworkElementNative sourceNative)
@@ -56,13 +58,15 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
         {
             if (_Source != null)
             {
-                _Object._ProviderValueChanged(_Precedence, DataContextProperty, DependencyObjectNative.UNDEFINED, _Source.GetValue(DataContextProperty), true, false, false);
+                var error = HtmlPage.Window.CreateInstance("BError");
+                _Object._ProviderValueChanged(_Precedence, DataContextProperty, DependencyObjectNative.UNDEFINED, _Source.GetValue(DataContextProperty), true, false, false, error);
             }
         }
         
         public void PropertyChanged(object sender, PropertyChangedEventArgsNative args)
         {
-            _Object._ProviderValueChanged(_Precedence, args.Property, args.OldValue, args.NewValue, true, false, false);
+            var error = HtmlPage.Window.CreateInstance("BError");
+            _Object._ProviderValueChanged(_Precedence, args.Property, args.OldValue, args.NewValue, true, false, false, error);
         }
     }
 }

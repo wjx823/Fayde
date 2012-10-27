@@ -886,10 +886,10 @@ FrameworkElement.Instance._HasFocus = function () {
 //#region Interop
 
 FrameworkElement.Instance._ClearImplicitStyles = function (styleMask) {
+    var error = new BError();
     if (this._Native) {
-        this._Native.ClearImplicitStyles(styleMask);
+        this._Native.ClearImplicitStyles(styleMask, error);
     } else {
-        var error = new BError();
         this._Providers[_PropertyPrecedence.ImplicitStyle].ClearStyles(styleMask, error);
     }
 };
@@ -915,19 +915,19 @@ FrameworkElement.Instance._SetImplicitStyles = function (styleMask, styles) {
     }
 
     if (this._Native)
-        this._Native.SetImplicitStyles(styleMask, styles);
+        this._Native.SetImplicitStyles(styleMask, styles, error);
     else
         this._Providers[_PropertyPrecedence.ImplicitStyle].SetStyles(styleMask, styles, error);
 };
 FrameworkElement.Instance._UpdateLocalStyle = function (newStyle, error) {
     if (this._Native)
-        this._Native.UpdateLocalStyle(newStyle);
+        this._Native.UpdateLocalStyle(newStyle, error);
     else
         this._Providers[_PropertyPrecedence.LocalStyle]._UpdateStyle(newStyle, error);
 };
 FrameworkElement.Instance._SetDataContextDataSource = function (dataSource) {
     if (this._Native)
-        this._Native._SetDataContextDataSource(dataSource);
+        this._Native.SetDataContextDataSource(dataSource);
     else
         this._Providers[_PropertyPrecedence.InheritedDataContext].SetDataSource(dataSource);
 };

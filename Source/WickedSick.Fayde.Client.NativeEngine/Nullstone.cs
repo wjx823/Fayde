@@ -4,6 +4,15 @@ namespace WickedSick.Fayde.Client.NativeEngine
 {
     public static class Nullstone
     {
+        public static bool RefEquals(INullstoneObjectWrapper ow1, INullstoneObjectWrapper ow2)
+        {
+            if (ow1 == null && ow2 == null)
+                return true;
+            if (ow1 == null || ow2 == null)
+                return false;
+            return ow1._ID == ow2._ID;
+        }
+
         public static bool RefEquals(object o1, object o2)
         {
             if (o1 == null && o2 == null)

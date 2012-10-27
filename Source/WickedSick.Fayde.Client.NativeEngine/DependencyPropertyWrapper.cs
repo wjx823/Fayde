@@ -101,7 +101,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
         {
             if (_ChangedCallback == null)
                 return;
-            Object.InvokeSelf("_ChangedCallback", donative.Object, args.Object);
+            Object.Invoke("_ChangedCallback", donative.Object, args.Object);
         }
 
         internal int GetInheritable(object ancestor)

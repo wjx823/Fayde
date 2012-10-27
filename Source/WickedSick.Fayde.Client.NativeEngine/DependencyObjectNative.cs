@@ -126,32 +126,32 @@ namespace WickedSick.Fayde.Client.NativeEngine
         #region SetValue
 
         [ScriptableMember]
-        public void SetValue(ScriptObject prop, object value)
+        public void SetValue(ScriptObject prop, object value, ScriptObject error)
         {
-            SetValue(DependencyPropertyWrapper.Lookup(prop), value);
+            SetValue(DependencyPropertyWrapper.Lookup(prop), value, error);
         }
-        private void SetValue(DependencyPropertyWrapper prop, object value)
+        private void SetValue(DependencyPropertyWrapper prop, object value, ScriptObject error)
         {
             if (prop == null)
                 return;
 
             if (value == null)
             {
-                this.DoSetValue(prop, value);
+                this.DoSetValue(prop, value, error);
                 return;
             }
 
             //is UnsetValue? --> ClearValue
 
-            this.DoSetValue(prop, value);
+            this.DoSetValue(prop, value, error);
         }
-        private void DoSetValue(DependencyPropertyWrapper prop, object value)
+        private void DoSetValue(DependencyPropertyWrapper prop, object value, ScriptObject error)
         {
             var coerced = value;
             //TODO: Coercer/validate
-            DoSetValueImpl(prop, value);
+            DoSetValueImpl(prop, value, error);
         }
-        private bool DoSetValueImpl(DependencyPropertyWrapper prop, object value)
+        private bool DoSetValueImpl(DependencyPropertyWrapper prop, object value, ScriptObject error)
         {
             //TODO: If frozen (don't think this happens in silverlight) --> error
 
@@ -179,7 +179,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
                 if (newValue != UNDEFINED)
                     LocalValueProvider.SetValue(prop, newValue);
-                _ProviderValueChanged(PropertyPrecedence.LocalValue, prop, currentValue, newValue, true, true, true);
+                _ProviderValueChanged(PropertyPrecedence.LocalValue, prop, currentValue, newValue, true, true, true, error);
             }
 
             return true;
@@ -204,11 +204,11 @@ namespace WickedSick.Fayde.Client.NativeEngine
         #region ClearValue
 
         [ScriptableMember]
-        public void ClearValue(ScriptObject prop, bool notifyListeners)
+        public void ClearValue(ScriptObject prop, object notifyListeners, ScriptObject error)
         {
-            ClearValue(DependencyPropertyWrapper.Lookup(prop), notifyListeners);
+            ClearValue(DependencyPropertyWrapper.Lookup(prop), notifyListeners != null && notifyListeners is bool && (bool)notifyListeners, error);
         }
-        private void ClearValue(DependencyPropertyWrapper prop, bool notifyListeners)
+        private void ClearValue(DependencyPropertyWrapper prop, bool notifyListeners, ScriptObject error)
         {
             var oldLocalValue = this.ReadLocalValue(prop);
             if (oldLocalValue == UNDEFINED)
@@ -225,7 +225,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
                     if (!prop._IsCustom)
                     {
                         var dobn = GetFromScriptObject(dob);
-                        dobn.CallRemoveParent(this);
+                        dobn.CallRemoveParent(this, error);
                         dobn.CallRemovePropertyChangedListener(Object, prop);
                         dobn.SetIsAttached(false);
                         if (Nullstone.Is(dob, JsTypeNames.Collection))
@@ -244,11 +244,11 @@ namespace WickedSick.Fayde.Client.NativeEngine
             {
                 var provider = this._Providers[i];
                 if (provider != null)
-                    provider.RecomputePropertyValueOnClear(prop);
+                    provider.RecomputePropertyValueOnClear(prop, error);
             }
 
             if (oldLocalValue != UNDEFINED)
-                _ProviderValueChanged(PropertyPrecedence.LocalValue, prop, oldLocalValue, UNDEFINED, notifyListeners, true, false);
+                _ProviderValueChanged(PropertyPrecedence.LocalValue, prop, oldLocalValue, UNDEFINED, notifyListeners, true, false, error);
         }
 
         #endregion
@@ -268,7 +268,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
             }
             return -1;
         }
-        internal void _ProviderValueChanged(int precedence, DependencyPropertyWrapper prop, object oldProviderValue, object newProviderValue, bool notifyListeners, bool setParent, bool mergeNamesOnSetParent)
+        internal void _ProviderValueChanged(int precedence, DependencyPropertyWrapper prop, object oldProviderValue, object newProviderValue, bool notifyListeners, bool setParent, bool mergeNamesOnSetParent, ScriptObject error)
         {
             var bitmask = GetProviderBitmask(prop);
             if (newProviderValue != UNDEFINED)
@@ -288,7 +288,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
                     continue;
                 if (provider.GetPropertyValue(prop) != UNDEFINED)
                 {
-                    _CallRecomputePropertyValueForProviders(prop, precedence);
+                    _CallRecomputePropertyValueForProviders(prop, precedence, error);
                     return;
                 }
             }
@@ -333,7 +333,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
                     return;
             }
 
-            _CallRecomputePropertyValueForProviders(prop, precedence);
+            _CallRecomputePropertyValueForProviders(prop, precedence, error);
 
             DependencyObjectNative oldDON = null;
             DependencyObjectNative newDON = null;
@@ -347,7 +347,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
                 if (setsParent)
                 {
                     oldDON.SetIsAttached(false);
-                    oldDON.CallRemoveParent(this);
+                    oldDON.CallRemoveParent(this, error);
                     oldDON.CallRemoveTarget(this);
 
                     oldDON.CallRemovePropertyChangedListener(Object, prop);
@@ -363,7 +363,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
                 if (setsParent)
                 {
                     newDON.SetIsAttached(this.GetIsAttached());
-                    newDON.CallAddParent(this, mergeNamesOnSetParent);
+                    newDON.CallAddParent(this, mergeNamesOnSetParent, error);
 
                     newDON._ResourceBase = _ResourceBase;
                     CallAddCollectionListeners(newDON);
@@ -378,7 +378,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
             if (notifyListeners)
             {
                 var args = new PropertyChangedEventArgsNative(prop, oldValue, newValue);
-                CallOnPropertyChanged(args);
+                CallOnPropertyChanged(args, error);
                 prop.CallChangedCallback(this, args);
 
                 if (prop._Inheritable > 0)
@@ -393,13 +393,13 @@ namespace WickedSick.Fayde.Client.NativeEngine
                 }
             }
         }
-        private void _CallRecomputePropertyValueForProviders(DependencyPropertyWrapper prop, int precedence)
+        private void _CallRecomputePropertyValueForProviders(DependencyPropertyWrapper prop, int precedence, ScriptObject error)
         {
             for (int i = 0; i < precedence; i++)
             {
                 var provider = _Providers[i];
                 if (provider != null)
-                    provider.RecomputePropertyValueOnLower(prop);
+                    provider.RecomputePropertyValueOnLower(prop, error);
             }
         }
 
@@ -415,7 +415,8 @@ namespace WickedSick.Fayde.Client.NativeEngine
             if (prop == null)
                 return false;
 
-            _ProviderValueChanged(PropertyPrecedence.Inherited, prop, UNDEFINED, newValue, true, false, false);
+            var error = HtmlPage.Window.CreateInstance("BError");
+            _ProviderValueChanged(PropertyPrecedence.Inherited, prop, UNDEFINED, newValue, true, false, false, error);
             return true;
         }
         internal object _GetInheritedValueSource(int inheritable)
@@ -458,10 +459,10 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
         #region Property Changed
 
-        private void CallOnPropertyChanged(PropertyChangedEventArgsNative args)
+        private void CallOnPropertyChanged(PropertyChangedEventArgsNative args, ScriptObject error)
         {
             RaisePropertyChanged(args);
-            Object.Invoke("_OnPropertyChanged", args.Object, null);
+            Object.Invoke("_OnPropertyChanged", args.Object, error);
         }
         private void CallAddPropertyChangedListener(ScriptObject so, DependencyPropertyWrapper prop)
         {
@@ -555,13 +556,13 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
         #region Parent
 
-        private void CallAddParent(DependencyObjectNative parent, bool mergeNamesFromSubtree)
+        private void CallAddParent(DependencyObjectNative parent, bool mergeNamesFromSubtree, ScriptObject error)
         {
-            Object.Invoke("_AddParent", parent.Object, mergeNamesFromSubtree);
+            Object.Invoke("_AddParent", parent.Object, mergeNamesFromSubtree, error);
         }
-        private void CallRemoveParent(DependencyObjectNative parent)
+        private void CallRemoveParent(DependencyObjectNative parent, ScriptObject error)
         {
-            Object.Invoke("_RemoveParent", parent.Object);
+            Object.Invoke("_RemoveParent", parent.Object, error);
         }
 
         #endregion
@@ -668,7 +669,8 @@ namespace WickedSick.Fayde.Client.NativeEngine
         {
             if (prop._ID == NameProperty._ID)
                 return;
-            newObject.SetValue(prop, DependencyObjectInterop.Clone(value));
+            var error = HtmlPage.Window.CreateInstance("BError");
+            newObject.SetValue(prop, DependencyObjectInterop.Clone(value), error);
         }
 
         #endregion

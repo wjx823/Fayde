@@ -233,7 +233,10 @@ DependencyObject.Instance._SetValue = function (propd, value) {
     if (this._Native) {
         if (value === undefined)
             value = Fayde.SL_INTEROP_UNDEFINED;
-        this._Native.SetValue(propd, value);
+        var error = new BError();
+        this._Native.SetValue(propd, value, error);
+        if (error.IsErrored())
+            throw error.CreateException();
         return;
     }
 
@@ -455,7 +458,10 @@ DependencyObject.Instance.$ClearValueInternal = function (propd) {
 };
 DependencyObject.Instance._ClearValue = function (propd, notifyListeners) {
     if (this._Native) {
-        this._Native.ClearValue(propd, notifyListeners);
+        var error = new BError();
+        this._Native.ClearValue(propd, notifyListeners, error);
+        if (error.IsErrored())
+            throw error.CreateException();
         return;
     }
     var error = new BError();
