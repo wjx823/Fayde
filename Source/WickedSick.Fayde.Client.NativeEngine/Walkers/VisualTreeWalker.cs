@@ -91,7 +91,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Walkers
                 var func = _Collection.GetProperty("GetCount") as ScriptObject;
                 if (func == null)
                     return 0;
-                var obj = func.InvokeSelf();
+                var obj = _Collection.Invoke("GetCount");
                 if (obj is double)
                     return (int)(double)obj;
                 return 0;
@@ -111,7 +111,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Walkers
             var func = _Collection.GetProperty("GetValueAtZIndex") as ScriptObject;
             if (func == null)
                 return null;
-            return func.InvokeSelf(index) as ScriptObject;
+            return _Collection.Invoke("GetValueAtZIndex", index) as ScriptObject;
         }
 
         private ScriptObject GetValueAt(int index)
@@ -119,7 +119,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Walkers
             var func = _Collection.GetProperty("GetValueAt") as ScriptObject;
             if (func == null)
                 return null;
-            return func.InvokeSelf(index) as ScriptObject;
+            return _Collection.Invoke("GetValueAt", index) as ScriptObject;
         }
     }
 }

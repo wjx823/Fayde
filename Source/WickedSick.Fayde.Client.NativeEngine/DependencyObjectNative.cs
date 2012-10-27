@@ -587,7 +587,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
         protected ScriptObject GetMentor()
         {
-            return Object.Invoke("_Mentor") as ScriptObject;
+            return Object.GetProperty("_Mentor") as ScriptObject;
         }
 
         protected void SetMentor(ScriptObject value)

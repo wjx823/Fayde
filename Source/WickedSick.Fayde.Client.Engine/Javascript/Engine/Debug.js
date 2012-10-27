@@ -90,7 +90,7 @@ function VsmDebug(message) {
         console.log("VSM: " + message);
 }
 function LayoutDebug(message) {
-    if (true)
+    if (false)
         return;
     if (window.console && console.log)
         console.log("LAYOUT: " + message);
@@ -113,7 +113,7 @@ function DrawDebug(message) {
         console.log("DRAW: " + message);
 }
 function RenderDebug(message) {
-    if (true)
+    if (false)
         return;
     if (window.console && console.log)
         console.log("RENDER: " + message);

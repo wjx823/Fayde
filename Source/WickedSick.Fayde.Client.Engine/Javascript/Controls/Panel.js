@@ -10,7 +10,7 @@ var Panel = Nullstone.Create("Panel", FrameworkElement);
 
 Panel.BackgroundProperty = DependencyProperty.Register("Background", function () { return Brush; }, Panel);
 Panel._CreateChildren = {
-    GetValue: function (propd, obj) {
+    GetValue: function (obj) {
         var col = new UIElementCollection();
         col._SetIsSecondaryParent(true);
         if (obj)

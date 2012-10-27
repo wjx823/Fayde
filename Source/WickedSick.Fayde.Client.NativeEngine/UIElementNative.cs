@@ -12,11 +12,11 @@ namespace WickedSick.Fayde.Client.NativeEngine
             : base(@object)
         {
             _Providers[PropertyPrecedence.Inherited] = new InheritedPropertyValueProvider(this);
-            _VisualParentLazy = new LazyMember<UIElementNative>(@object, "_VisualParent");
+            _VisualParentLazy = new LazyMember<ScriptObject>(@object, "_VisualParent");
         }
 
-        private LazyMember<UIElementNative> _VisualParentLazy;
-        internal UIElementNative VisualParent { get { return _VisualParentLazy.Value; } }
+        private LazyMember<ScriptObject> _VisualParentLazy;
+        internal UIElementNative VisualParent { get { return DependencyObjectNative.GetFromScriptObject(_VisualParentLazy.Value) as UIElementNative; } }
 
         internal override IEnumerable<DependencyObjectNative> GetChildrenForInheritedPropagation()
         {
