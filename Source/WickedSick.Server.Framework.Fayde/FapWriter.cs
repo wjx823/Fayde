@@ -9,12 +9,13 @@ namespace WickedSick.Server.Framework.Fayde
     {
         private static readonly string OPTIMIZER_EMBED_HTML =
 @"      <object data=""data:application/x-silverlight-2,"" type=""application/x-silverlight-2"">
-        <param name=""source"" value=""{0}""/>
-        <param name=""onError"" value=""onSilverlightError"" />
-        <param name=""onLoad"" value=""pluginLoaded"" />
-        <param name=""background"" value=""white"" />
-        <param name=""minRuntimeVersion"" value=""4.0.60310.0"" />
-        <param name=""autoUpgrade"" value=""true"" />
+            <param name=""source"" value=""{0}""/>
+            <param name=""onError"" value=""onSilverlightError"" />
+            <param name=""onLoad"" value=""pluginLoaded"" />
+            <param name=""background"" value=""white"" />
+            <param name=""minRuntimeVersion"" value=""4.0.60310.0"" />
+            <param name=""autoUpgrade"" value=""true"" />
+            <param name=""windowless"" value=""true"" />
         </object>";
 
         private static readonly string START_INITIALIZATION_SCRIPT =

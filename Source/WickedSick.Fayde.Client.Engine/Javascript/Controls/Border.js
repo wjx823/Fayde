@@ -177,7 +177,7 @@ Border.Instance._RenderUnbalanced = function (ctx, extents, backgroundBrush, bor
     tmpCtx.fill();
 
     ctx.CanvasContext.drawImage(tmpCanvas, extents.X, extents.Y);
-    DrawDebug("Draw Image (Border)");
+    DrawDebug("Draw Border (Unbalanced)");
 
     innerPath.Draw(ctx);
     if (backgroundBrush)
