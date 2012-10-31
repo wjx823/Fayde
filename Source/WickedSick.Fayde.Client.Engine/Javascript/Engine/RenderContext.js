@@ -11,6 +11,17 @@ var _RenderContext = Nullstone.Create("_RenderContext", undefined, 1);
 _RenderContext.Instance.Init = function (surface) {
     this.Surface = surface;
     this.CanvasContext = this.Surface._Ctx;
+    if (!this.CanvasContext.hasOwnProperty("currentTransform")) {
+        Object.defineProperty(this.CanvasContext, "currentTransform", {
+            get: function () {
+                return this._CurrentTransform;
+            },
+            set: function (value) {
+                this.setTransform(value[0], value[1], value[3], value[4], value[2], value[5]);
+                this._CurrentTransform = value;
+            }
+        });
+    }
     this._Transforms = [];
 };
 
@@ -57,13 +68,9 @@ _RenderContext.Instance.PreTransform = function (matrix) {
 
     var ct = this.CurrentTransform;
     mat3.multiply(matrix, ct, ct); //ct = ct * matrix
-    this.CanvasContext.setTransform(ct[0], ct[1], ct[3], ct[4], ct[2], ct[5]);
+    this.CanvasContext.currentTransform = ct;
 
     TransformDebug("PreTransform", this.CurrentTransform);
-
-    //Matrix.Multiply(ct, ct, matrix);
-    //var els = ct._Elements;
-    //this.CanvasContext.setTransform(els[0], els[1], els[3], els[4], els[2], els[5]);
 };
 _RenderContext.Instance.Transform = function (matrix) {
     if (matrix instanceof Transform) {
@@ -71,17 +78,13 @@ _RenderContext.Instance.Transform = function (matrix) {
     }
     var ct = this.CurrentTransform;
     mat3.multiply(ct, matrix, ct); //ct = matrix * ct
-    this.CanvasContext.setTransform(ct[0], ct[1], ct[3], ct[4], ct[2], ct[5]);
+    this.CanvasContext.currentTransform = ct;
 
     TransformDebug("Transform", this.CurrentTransform);
-
-    //Matrix.Multiply(ct, matrix, ct);
-    //var els = ct._Elements;
-    //this.CanvasContext.setTransform(els[0], els[1], els[3], els[4], els[2], els[5]);
 };
 _RenderContext.Instance.Translate = function (x, y) {
     var ct = this.CurrentTransform;
-    mat3.translate(x, y);
+    mat3.translate(ct, x, y);
     this.CanvasContext.translate(x, y);
 
     TransformDebug("Translate", this.CurrentTransform);
