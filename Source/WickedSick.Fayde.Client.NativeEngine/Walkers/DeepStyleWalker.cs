@@ -48,10 +48,6 @@ namespace WickedSick.Fayde.Client.NativeEngine.Walkers
             _Setters = list.OrderBy(GetSetterPropertyID).ToArray();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns>ScriptObject that represents a Setter.</returns>
         public SetterNative Step()
         {
             if (_Offset < _Setters.Length)
