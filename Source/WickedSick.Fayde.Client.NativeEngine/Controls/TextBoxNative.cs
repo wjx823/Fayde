@@ -6,27 +6,27 @@ namespace WickedSick.Fayde.Client.NativeEngine.Controls
     [ScriptableType]
     public class TextBoxNative : ControlNative
     {
-        public static DependencyPropertyWrapper ForegroundProperty;
-        public static DependencyPropertyWrapper BackgroundProperty;
+        public static DependencyPropertyWrapper SelectionForegroundProperty;
+        public static DependencyPropertyWrapper SelectionBackgroundProperty;
         public static DependencyPropertyWrapper BaselineOffsetProperty;
 
         public TextBoxNative(ScriptObject @object)
             : base(@object)
         {
-            _Providers[PropertyPrecedence.DynamicValue] = new TextBoxBaseDynamicPropertyValueProvider(this, ForegroundProperty, BackgroundProperty, BaselineOffsetProperty);
+            _Providers[PropertyPrecedence.DynamicValue] = new TextBoxBaseDynamicPropertyValueProvider(this, SelectionForegroundProperty, SelectionBackgroundProperty, BaselineOffsetProperty);
         }
 
         public static void InitializeProperties(ScriptObject ctor)
         {
             ScriptObject prop;
 
-            prop = ctor.GetProperty("BackgroundProperty") as ScriptObject;
+            prop = ctor.GetProperty("SelectionBackgroundProperty") as ScriptObject;
             if (prop != null)
-                TextBoxNative.BackgroundProperty = DependencyPropertyWrapper.Lookup(prop);
+                TextBoxNative.SelectionBackgroundProperty = DependencyPropertyWrapper.Lookup(prop);
 
-            prop = ctor.GetProperty("ForegroundProperty") as ScriptObject;
+            prop = ctor.GetProperty("SelectionForegroundProperty") as ScriptObject;
             if (prop != null)
-                TextBoxNative.ForegroundProperty = DependencyPropertyWrapper.Lookup(prop);
+                TextBoxNative.SelectionForegroundProperty = DependencyPropertyWrapper.Lookup(prop);
 
             prop = ctor.GetProperty("BaselineOffsetProperty") as ScriptObject;
             if (prop != null)
