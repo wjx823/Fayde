@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Browser;
 using WickedSick.Fayde.Client.NativeEngine.Providers;
 
@@ -20,15 +21,14 @@ namespace WickedSick.Fayde.Client.NativeEngine.Controls
             var coll = GetValueNoAutoCreate(InlinesProperty);
             if (coll != DependencyObjectNative.UNDEFINED && coll is ScriptObject)
             {
-                var ht = (coll as ScriptObject).GetProperty("_ht") as object[];
+                var ht = (coll as ScriptObject).GetProperty("_ht") as ScriptObject;
                 if (ht != null)
                 {
-                    for (int i = 0; i < ht.Length; i++)
-                    {
-                        yield return ht[i] as DependencyObjectNative;
-                    }
+                    return ht.GetItems<ScriptObject>()
+                        .Select(GetFromScriptObject);
                 }
             }
+            return Enumerable.Empty<DependencyObjectNative>();
         }
     }
 }
