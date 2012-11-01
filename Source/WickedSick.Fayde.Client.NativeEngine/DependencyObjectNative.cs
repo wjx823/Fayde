@@ -272,7 +272,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
         internal int GetPropertyValueProvider(DependencyPropertyWrapper prop)
         {
-            var bitmask = _ProviderBitmasks[prop];
+            var bitmask = GetProviderBitmask(prop);
             for (int i = 0; i < PropertyPrecedence.Lowest; i++)
             {
                 var p = 1 << i;
