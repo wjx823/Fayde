@@ -3,7 +3,7 @@
 namespace WickedSick.Fayde.Client.NativeEngine.Documents
 {
     [ScriptableType]
-    public class ParagraphNative : TextElementNative
+    public class ParagraphNative : BlockNative
     {
         public static DependencyPropertyWrapper InlinesProperty;
 
