@@ -111,6 +111,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
                 MaybePropagateInheritedValue(context.FontStretchSource, Inheritable.FontStretch, props, element);
                 MaybePropagateInheritedValue(context.FontStyleSource, Inheritable.FontStyle, props, element);
                 MaybePropagateInheritedValue(context.FontWeightSource, Inheritable.FontWeight, props, element);
+                MaybePropagateInheritedValue(context.FontSizeSource, Inheritable.FontSize, props, element);
                 MaybePropagateInheritedValue(context.LanguageSource, Inheritable.Language, props, element);
                 MaybePropagateInheritedValue(context.FlowDirectionSource, Inheritable.FlowDirection, props, element);
                 MaybePropagateInheritedValue(context.UseLayoutRoundingSource, Inheritable.UseLayoutRounding, props, element);
@@ -132,6 +133,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
                 MaybeRemoveInheritedValue(context.FontStretchSource, Inheritable.FontStretch, props, element);
                 MaybeRemoveInheritedValue(context.FontStyleSource, Inheritable.FontStyle, props, element);
                 MaybeRemoveInheritedValue(context.FontWeightSource, Inheritable.FontWeight, props, element);
+                MaybeRemoveInheritedValue(context.FontSizeSource, Inheritable.FontSize, props, element);
                 MaybeRemoveInheritedValue(context.LanguageSource, Inheritable.Language, props, element);
                 MaybeRemoveInheritedValue(context.FlowDirectionSource, Inheritable.FlowDirection, props, element);
                 MaybeRemoveInheritedValue(context.UseLayoutRoundingSource, Inheritable.UseLayoutRounding, props, element);
