@@ -60,7 +60,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
 
         public bool LocalValueChanged(DependencyPropertyWrapper prop)
         {
-            if (prop != null && prop._ID == IsEnabledProperty._ID)
+            if (prop != null && prop._ID != IsEnabledProperty._ID)
                 return false;
 
             var localEnabled = GetIsEnabledValue(_Object, PropertyPrecedence.LocalValue);
