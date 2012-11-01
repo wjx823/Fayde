@@ -230,7 +230,7 @@ namespace WickedSick.Fayde.Client.NativeEngine
                             dobn.CallRemoveParent(this, error);
                             dobn.CallRemovePropertyChangedListener(Object, prop);
                             dobn.SetIsAttached(false);
-                            if (Nullstone.Is(dob, JsTypeNames.Collection))
+                            if (dobn is CollectionNative)
                             {
                                 //TODO: Changed Event - Remove Handler
                                 //TODO: Item Changed Event - Remove Handler
