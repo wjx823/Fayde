@@ -31,6 +31,7 @@ DependencyObject.Instance.Init = function () {
     var nativeInterop;
     if ((nativeInterop = Fayde.NInterop)) {
         this._Native = nativeInterop.CreateObjectNative(this);
+        delete this._Providers;
     }
 };
 
@@ -152,7 +153,8 @@ DependencyObject.Instance.GetDependencyProperty = function (propName) {
 };
 
 DependencyObject.Instance.AddProvider = function (provider) {
-    this._Providers[provider._PropertyPrecedence] = provider;
+    if (this._Providers)
+        this._Providers[provider._PropertyPrecedence] = provider;
 };
 
 //#region Set Value
@@ -307,7 +309,7 @@ DependencyObject.Instance._SetValueWithErrorImpl = function (propd, value, error
         if (propd._IsAutoCreated)
             this._Providers[propPrecEnum.AutoCreate].ClearValue(propd);
 
-        if (value !== undefined && (!propd._IsAutoCreated || !(value instanceof DependencyObject)))
+        if (value !== undefined && (!propd._IsAutoCreated || !(value instanceof DependencyObject) || Nullstone.Is(value, DependencyObject)))
             newValue = value;
         else
             newValue = undefined;
@@ -786,9 +788,12 @@ DependencyObject.Instance.RemovePropertyChangedListener = function (ldo, propd) 
     }
 };
 DependencyObject.Instance._OnSubPropertyChanged = function (propd, sender, args) {
-    var inheritedProvider = this._Providers[_PropertyPrecedence.Inherited];
-    if (inheritedProvider)
-        inheritedProvider.PropagateInheritedProperty(propd, this, this);
+    if (this._Native) {
+    } else {
+        var inheritedProvider = this._Providers[_PropertyPrecedence.Inherited];
+        if (inheritedProvider)
+            inheritedProvider.PropagateInheritedProperty(propd, this, this);
+    }
 };
 
 //#endregion
