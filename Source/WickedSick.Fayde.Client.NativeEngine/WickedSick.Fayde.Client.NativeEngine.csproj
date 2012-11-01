@@ -82,6 +82,7 @@
     <Compile Include="DependencyObjectNative.cs" />
     <Compile Include="DependencyObjectInterop.cs" />
     <Compile Include="DependencyPropertyWrapper.cs" />
+    <Compile Include="Documents\InlineNative.cs" />
     <Compile Include="FrameworkElementNative.cs" />
     <Compile Include="INullstoneObjectWrapper.cs" />
     <Compile Include="INullstoneObjectWrapperEx.cs" />

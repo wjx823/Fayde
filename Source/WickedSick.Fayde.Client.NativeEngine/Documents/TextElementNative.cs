@@ -18,7 +18,10 @@ namespace WickedSick.Fayde.Client.NativeEngine.Documents
 
         internal override IEnumerable<DependencyObjectNative> GetChildrenForInheritedPropagation()
         {
-            var coll = GetValueNoAutoCreate(GetChildrenDP());
+            var childDP = GetChildrenDP();
+            if (childDP == null)
+                return Enumerable.Empty<DependencyObjectNative>();
+            var coll = GetValueNoAutoCreate(childDP);
             if (coll != DependencyObjectNative.UNDEFINED)
             {
                 var ht = (coll as ScriptObject).GetProperty("_ht") as ScriptObject;

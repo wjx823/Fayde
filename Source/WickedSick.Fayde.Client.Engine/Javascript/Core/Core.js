@@ -12,7 +12,7 @@ var Fayde = {
         Fayde.NInterop = SLApp.Content.DOInterop;
         Fayde.SL_INTEROP_UNDEFINED = Fayde.NInterop.CreateUndefined();
         Fayde.NInterop.RegisterNullstone(Nullstone);
-        Fayde.NInterop.RegisterTypes(Fayde, DependencyObject, DependencyProperty, UIElement, FrameworkElement, Collection, Control, Popup, TextBox, PasswordBox, TextBlock, Span, Paragraph, Section, Setter);
+        Fayde.NInterop.RegisterTypes(Fayde, DependencyObject, DependencyProperty, UIElement, FrameworkElement, Collection, Control, Popup, TextBox, PasswordBox, TextBlock, Inline, Span, Paragraph, Section, Setter);
         Fayde.Initialize(true);
     },
     IsSilverlightInstalled: function (b) {
