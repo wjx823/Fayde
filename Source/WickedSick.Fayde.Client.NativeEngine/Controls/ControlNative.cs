@@ -22,7 +22,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Controls
         }
 
         [ScriptableMember]
-        public void SetDataSource(ScriptObject dataSource)
+        public void SetIsEnabledDataSource(ScriptObject dataSource)
         {
             InheritedIsEnabledProvider.SetDataSource(dataSource);
         }
