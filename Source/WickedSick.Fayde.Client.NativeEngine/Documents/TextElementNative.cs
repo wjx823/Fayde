@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Browser;
+using WickedSick.Fayde.Client.NativeEngine.Providers;
 
 namespace WickedSick.Fayde.Client.NativeEngine.Documents
 {
@@ -9,6 +10,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Documents
         public TextElementNative(ScriptObject @object)
             : base(@object)
         {
+            _Providers[PropertyPrecedence.Inherited] = new InheritedPropertyValueProvider(this);
         }
 
         protected abstract DependencyPropertyWrapper GetChildrenDP();
