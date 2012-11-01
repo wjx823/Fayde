@@ -120,5 +120,17 @@ namespace WickedSick.Fayde.Client.NativeEngine
                 return null;
             return DependencyPropertyWrapper.Lookup(rv);
         }
+
+        internal bool Coerce(ScriptObject instance, object value, ScriptObject error, out object coerced)
+        {
+            coerced = Object.Invoke("_Coerce", instance, value, error);
+            return coerced != null && coerced != DependencyObjectNative.UNDEFINED;
+        }
+
+        internal bool Validate(ScriptObject instance, object value, ScriptObject error)
+        {
+            var o = Object.Invoke("_Validate", instance, Object, value, error);
+            return o is bool && (bool)o;
+        }
     }
 }

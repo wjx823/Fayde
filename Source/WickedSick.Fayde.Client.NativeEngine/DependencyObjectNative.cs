@@ -145,11 +145,19 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
             this.DoSetValue(prop, value, error);
         }
-        private void DoSetValue(DependencyPropertyWrapper prop, object value, ScriptObject error)
+        private bool DoSetValue(DependencyPropertyWrapper prop, object value, ScriptObject error)
         {
             var coerced = value;
-            //TODO: Coercer/validate
-            DoSetValueImpl(prop, value, error);
+            if (!prop.Coerce(Object, value, error, out coerced)
+                || !IsValueValid(prop, value, error)
+                || !prop.Validate(Object, coerced, error))
+            {
+                //TODO: check IsErrored
+                return false;
+            }
+            var retVal = DoSetValueImpl(prop, value, error);
+            //TODO: check IsErrored
+            return retVal;
         }
         private bool DoSetValueImpl(DependencyPropertyWrapper prop, object value, ScriptObject error)
         {
@@ -255,6 +263,12 @@ namespace WickedSick.Fayde.Client.NativeEngine
         }
 
         #endregion
+
+        private bool IsValueValid(DependencyPropertyWrapper prop, object coerced, ScriptObject error)
+        {
+            //TODO: Handle type problems
+            return true;
+        }
 
         internal int GetPropertyValueProvider(DependencyPropertyWrapper prop)
         {
