@@ -95,6 +95,8 @@ FaydeInterop.prototype.GetAttachedDPs = function (dobj) {
     if (!(dobj instanceof DependencyObject))
         return [];
     var arr = [];
+    if (!dobj._Providers)
+        return arr;
     var localProvider = dobj._Providers[_PropertyPrecedence.LocalValue];
     var dpCache = this._DPCache;
     for (var dpid in localProvider._ht) {
