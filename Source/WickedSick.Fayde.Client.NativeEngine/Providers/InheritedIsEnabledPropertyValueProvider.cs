@@ -65,7 +65,7 @@ namespace WickedSick.Fayde.Client.NativeEngine.Providers
 
             var localEnabled = GetIsEnabledValue(_Object, PropertyPrecedence.LocalValue);
             var parentEnabled = _Source != null && (_Object as UIElementNative).VisualParent != null ? GetIsEnabledValue(_Source) : (bool?)null;
-            var newValue = localEnabled == true && !(parentEnabled != false);
+            var newValue = localEnabled == true && parentEnabled != false;
             if (newValue != _CurrentValue)
             {
                 var oldValue = _CurrentValue;
