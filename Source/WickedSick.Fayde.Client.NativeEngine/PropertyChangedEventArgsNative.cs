@@ -12,8 +12,10 @@ namespace WickedSick.Fayde.Client.NativeEngine
 
             Object = HtmlPage.Window.CreateInstance("Object");
             Object.SetProperty("Property", Property.Object);
-            Object.SetProperty("OldValue", OldValue);
-            Object.SetProperty("NewValue", NewValue);
+            if (OldValue != DependencyObjectNative.UNDEFINED)
+                Object.SetProperty("OldValue", OldValue);
+            if (NewValue != DependencyObjectNative.UNDEFINED)
+                Object.SetProperty("NewValue", NewValue);
         }
 
         public ScriptObject Object { get; set; }
