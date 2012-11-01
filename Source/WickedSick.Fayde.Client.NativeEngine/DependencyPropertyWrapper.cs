@@ -105,17 +105,17 @@ namespace WickedSick.Fayde.Client.NativeEngine
             Object.Invoke("_ChangedCallback", donative.Object, args.Object);
         }
 
-        internal int GetInheritable(object ancestor)
+        internal int GetInheritable(DependencyObjectNative ancestor)
         {
-            var rv = Object.Invoke("_GetInheritable", ancestor);
+            var rv = Object.Invoke("_GetInheritable", ancestor.Object);
             if (rv == null)
                 return 0;
             return (int)(double)rv;
         }
 
-        internal static DependencyPropertyWrapper GetFromInheritable(int inheritable, object ancestor)
+        internal static DependencyPropertyWrapper GetFromInheritable(int inheritable, DependencyObjectNative ancestor)
         {
-            var rv = JsCtor.Invoke("_GetFromInheritable", inheritable, ancestor) as ScriptObject;
+            var rv = JsCtor.Invoke("_GetFromInheritable", inheritable, ancestor.Object) as ScriptObject;
             if (rv == null)
                 return null;
             return DependencyPropertyWrapper.Lookup(rv);
